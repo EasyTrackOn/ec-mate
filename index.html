@@ -621,8 +621,8 @@ function downloadPNG() {
             backgroundColor: "#ffffff",
             logging: false,
             // Capture slightly more area for margins
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight
+            windowWidth: '500px';//element.scrollWidth,
+            windowHeight: '600px';// element.scrollHeight
         }).then(canvas => {
             const link = document.createElement("a");
             link.download = `Result_${document.getElementById("reg").textContent}.png`;
