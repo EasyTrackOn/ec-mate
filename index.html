@@ -412,13 +412,13 @@
                     </tbody>
             </table>
 
-            <div class="sheet-footer">
+            <div class="sheet-footer d-none">
                 <div class="signature-box">
                     <br><br>
                     <span style="border-top: 1px solid #000; padding-top: 5px; font-size: 13px;">Controller of Examinations</span>
                 </div>
                 
-                <div class="stamp-box" id="finalStatus">
+                <div class="stamp-box" id="finalStatus" style="display: none;">
                     --
                 </div>
             </div>
@@ -447,15 +447,6 @@ function setLoading(show, msg = "Please wait...") {
     }
 }
 
-// --- INITIAL LOAD ---
-document.addEventListener("DOMContentLoaded", () => {
-    // Set current date
-    const today = new Date();
-    document.getElementById("dateDisplay").textContent = today.toLocaleDateString('en-GB', {
-        day: 'numeric', month: 'short', year: 'numeric'
-    });
-    loadInstitutions();
-});
 
 async function loadInstitutions() {
     setLoading(true, "LOADING INSTITUTIONS...");
@@ -477,6 +468,18 @@ async function loadInstitutions() {
     }
 }
 
+
+// --- INITIAL LOAD ---
+document.addEventListener("DOMContentLoaded", () => {
+    // Set current date
+    const today = new Date();
+    document.getElementById("dateDisplay").textContent = today.toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'short', year: 'numeric'
+    });
+    loadInstitutions();
+});
+
+
 function populateDropdown(list) {
     const select = document.getElementById("institution");
     select.innerHTML = '<option value="">Select Institution</option>';
@@ -487,6 +490,46 @@ function populateDropdown(list) {
         select.appendChild(option);
     });
 }
+
+
+function renderCertificate(data) {
+    document.getElementById("name").textContent = data.name;
+    document.getElementById("inst").textContent = data.institution;
+    document.getElementById("reg").textContent = data.registerNo;
+
+    let tbody = "";
+    let overallPass = true;
+
+    data.subjects.forEach((s, i) => {
+        // Pass Logic: TE >= 30% of Max
+        const tePassMark = s.maxTe ? (s.maxTe * 0.3) : 30; 
+        const isPass = s.te >= tePassMark;
+        if (!isPass) overallPass = false;
+
+        tbody += `
+            <tr>
+                <td style="color:#64748b;">${i + 1}</td>
+                <td class="subject-name"><strong>${s.subject}</strong></td>
+                <td>${s.te}</td>
+                <td>${s.ce}</td>
+                <td><strong>${s.te + s.ce}</strong></td>
+                <td style="font-weight:bold; color:${isPass ? '#000' : '#d32f2f'}">${isPass ? "PASS" : "FAIL"}</td>
+            </tr>`;
+    });
+
+    document.getElementById("marksTable").innerHTML = tbody;
+
+    // const statusDiv = document.getElementById("finalStatus");
+    // statusDiv.textContent = overallPass ? "PASSED" : "FAILED";
+    // statusDiv.style.color = overallPass ? "#15803d" : "#b91c1c"; // Green or Red text
+    // statusDiv.style.borderColor = overallPass ? "#15803d" : "#b91c1c"; // Match border
+
+    document.getElementById("resultSection").style.display = "block";
+    
+    // Scroll to result
+    resultSec.scrollIntoView({ behavior: 'smooth' });
+}
+
 
 // --- SEARCH LOGIC ---
 async function searchResult() {
@@ -526,43 +569,6 @@ async function searchResult() {
     }
 }
 
-function renderCertificate(data) {
-    document.getElementById("name").textContent = data.name;
-    document.getElementById("inst").textContent = data.institution;
-    document.getElementById("reg").textContent = data.registerNo;
-
-    let tbody = "";
-    let overallPass = true;
-
-    data.subjects.forEach((s, i) => {
-        // Pass Logic: TE >= 30% of Max
-        const tePassMark = s.maxTe ? (s.maxTe * 0.3) : 30; 
-        const isPass = s.te >= tePassMark;
-        if (!isPass) overallPass = false;
-
-        tbody += `
-            <tr>
-                <td style="color:#64748b;">${i + 1}</td>
-                <td class="subject-name"><strong>${s.subject}</strong></td>
-                <td>${s.te}</td>
-                <td>${s.ce}</td>
-                <td><strong>${s.te + s.ce}</strong></td>
-                <td style="font-weight:bold; color:${isPass ? '#000' : '#d32f2f'}">${isPass ? "PASS" : "FAIL"}</td>
-            </tr>`;
-    });
-
-    document.getElementById("marksTable").innerHTML = tbody;
-
-    const statusDiv = document.getElementById("finalStatus");
-    statusDiv.textContent = overallPass ? "PASSED" : "FAILED";
-    statusDiv.style.color = overallPass ? "#15803d" : "#b91c1c"; // Green or Red text
-    statusDiv.style.borderColor = overallPass ? "#15803d" : "#b91c1c"; // Match border
-
-    document.getElementById("resultSection").style.display = "block";
-    
-    // Scroll to result
-    resultSec.scrollIntoView({ behavior: 'smooth' });
-}
 
 // --- PNG DOWNLOAD ---
 function downloadPNG() {
