@@ -313,6 +313,44 @@
         font-size: 14px;
     }
 
+    /* --- MOBILE RESPONSIVENESS (The Key Changes) --- */
+    @media (max-width: 600px) {
+        body { padding: 10px; } /* Less body padding */
+        
+        /* 1. Stack inputs */
+        .input-group { flex-direction: column; width: 100%; }
+        .input-group select, .input-group input, .btn-search { width: 100%; min-width: 0; box-sizing: border-box; }
+        
+        /* 2. Compact Sheet */
+        .mark-sheet { padding: 20px; } /* Reduce paper padding */
+        
+        /* 3. Adjust Grid to 2 Columns (Label | Value) */
+        /* This forces the 4-column layout to wrap into 2 columns per row */
+        .student-info {
+            grid-template-columns: 100px 1fr; 
+            gap: 12px;
+        }
+
+        /* 4. Compact Table */
+        .marks-table th, .marks-table td { 
+            padding: 6px 4px; 
+            font-size: 12px; /* Smaller font */
+        }
+        .marks-table th:nth-child(1), .marks-table td:nth-child(1) {
+            display: none; /* Hide 'Sl No' on very small screens to save space */
+        }
+
+        /* 5. Stack Footer */
+        .sheet-footer {
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            text-align: center;
+        }
+        
+        .actions-bar { flex-direction: column; }
+        .btn-action { justify-content: center; width: 100%; }
+    }
     @keyframes spin { 100% { transform: rotate(360deg); } }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
