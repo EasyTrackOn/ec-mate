@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ASMI EC MATE - Result Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+    :root {
+        --primary: #1e3a8a; /* Deep Royal Blue */
+        --primary-hover: #172554;
+        --bg-body: #f1f5f9; /* Slate 100 */
+        --surface: #ffffff;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--bg-body);
+        color: var(--text-main);
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 850px;
+        margin: auto;
+    }
+
+    /* --- 1. MODERN SEARCH PANEL --- */
+    .search-panel {
+        background: var(--surface);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        margin-bottom: 30px;
+        border: 1px solid var(--border);
+        text-align: center;
+    }
+
+    .app-branding {
+        margin-bottom: 25px;
+    }
+
+    .app-branding img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .app-branding h1 {
+        margin: 0;
+        color: var(--primary);
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .input-group {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .input-group select, 
+    .input-group input {
+        padding: 12px 16px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 14px;
+        min-width: 220px;
+        outline: none;
+        transition: all 0.2s;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .input-group select:focus, 
+    .input-group input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+
+    .btn-search {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-size: 14px;
+        min-width: 120px;
+    }
+
+    .btn-search:hover {
+        background: var(--primary-hover);
+    }
+
+    .error-msg {
+        color: #ef4444;
+        font-size: 13px;
+        margin-top: 15px;
+        display: block;
+        font-weight: 500;
+    }
+
+    /* --- 2. THE RESULT SHEET (Certificate Style) --- */
+    #resultSection {
+        display: none;
+        animation: slideUp 0.5s ease;
+    }
+
+    .mark-sheet {
+        background: white;
+        padding: 50px;
+        position: relative;
+        /* Paper Effect */
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        font-family: 'Merriweather', serif; /* Official look */
+        color: #000;
+        max-width: 100%;
+        margin: auto;
+    }
+
+    .sheet-header {
+        text-align: center;
+        border-bottom: 2px solid #000;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+
+    .sheet-header img {
+        width: 80px;
+        margin-bottom: 10px;
+    }
+
+    .sheet-header h2 {
+        margin: 0;
+        font-size: 26px;
+        text-transform: uppercase;
+        color: #000;
+    }
+
+    .sheet-header p {
+        margin: 5px 0 0;
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    .sheet-header small {
+        display: block;
+        margin-top: 5px;
+        font-size: 14px;
+        font-style: italic;
+    }
+
+    /* Info Grid */
+    .student-info {
+        display: grid;
+        grid-template-columns: 120px 1fr 120px 1fr; /* aligned labels */
+        gap: 15px 10px;
+        margin-bottom: 30px;
+        font-family: 'Inter', sans-serif; /* Readable font for data */
+        font-size: 14px;
+        border: 1px solid #e2e8f0;
+        padding: 20px;
+        background: #f8fafc;
+    }
+
+    .label {
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 12px;
+        padding-top: 2px;
+    }
+
+    .val {
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    /* Table */
+    .marks-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 40px;
+        font-size: 14px;
+    }
+
+    .marks-table th {
+        background: #f1f5f9;
+        padding: 12px;
+        border: 1px solid #000;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .marks-table td {
+        border: 1px solid #000;
+        padding: 10px;
+        text-align: center;
+        font-family: 'Merriweather', serif;
+    }
+
+    .marks-table td.subject-name {
+        text-align: left;
+        padding-left: 15px;
+    }
+
+    /* Footer / Stamp */
+    .sheet-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-top: 50px;
+    }
+
+    .signature-box {
+        text-align: center;
+    }
+
+    .stamp-box {
+        border: 3px double #000;
+        padding: 10px 25px;
+        font-size: 20px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transform: rotate(-2deg); /* Stamp effect */
+        opacity: 0.9;
+    }
+
+    .disclaimer {
+        margin-top: 40px;
+        border-top: 1px solid #ccc;
+        padding-top: 10px;
+        font-size: 10px;
+        text-align: center;
+        color: #555;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* --- 3. ACTION BUTTONS --- */
+    .actions-bar {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .btn-action {
+        background: white;
+        border: 1px solid #cbd5e1;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+        font-size: 13px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .btn-action:hover {
+        background: #f8fafc;
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    /* --- 4. LOADING OVERLAY --- */
+    #loadingOverlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .spinner {
+        width: 40px; height: 40px;
+        border: 3px solid #e2e8f0;
+        border-top: 3px solid var(--primary);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-bottom: 15px;
+    }
+
+    .loading-text {
+        color: var(--primary);
+        font-weight: 600;
+        letter-spacing: 1px;
+        font-size: 14px;
+    }
+
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* --- 5. PRINT SPECIFIC --- */
+    @media print {
+        body { background: white; padding: 0; margin: 0; }
+        .search-panel, .actions-bar, .container > .card-header { display: none !important; }
+        .container { max-width: 100%; margin: 0; }
+        .mark-sheet { 
+            box-shadow: none; 
+            border: none; 
+            padding: 0; 
+            width: 100%; 
+            margin: 0; 
+        }
+        .student-info { background: none; border: none; padding: 0; margin-bottom: 20px; }
+        .student-info .label { color: #000; }
+        @page { margin: 2cm; }
+    }
+</style>
+</head>
+
+<body>
+
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingMessage">PROCESSING...</div>
+</div>
+
+<div class="container">
+
+    <div class="search-panel">
+        <div class="app-branding">
+            <img src="ECMATE.png" alt="Logo" onerror="this.style.display='none'">
+            <h1>ASMI EC MATE</h1>
+            <span style="color:var(--text-muted); font-size:13px;">Result Portal 2025-26</span>
+        </div>
+
+        <div class="input-group">
+            <select id="institution">
+                <option value="">Select Institution</option>
+            </select>
+            <input id="regNo" type="text" placeholder="Enter Register Number">
+            <button class="btn-search" onclick="searchResult()">Search</button>
+        </div>
+        <small id="error" class="error-msg"></small>
+    </div>
+
+    <div id="resultSection">
+        
+        <div class="actions-bar" data-html2canvas-ignore>
+            <button class="btn-action" onclick="window.print()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+                Print Report
+            </button>
+            <button class="btn-action" onclick="downloadPNG()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Download PNG
+            </button>
+        </div>
+
+        <div class="mark-sheet" id="printArea">
+            
+            <div class="sheet-header">
+                <img src="ECMATE.png" alt="Logo" style="width: 80px; display: block; margin: 0 auto 10px auto;" onerror="this.style.display='none'">
+                <h2>ASMI EC MATE</h2>
+                <p>CONSOLIDATED MARK SHEET</p>
+                <small>Semester-1 (2025-26)</small>
+            </div>
+
+            <div class="student-info">
+                <div class="label">Candidate Name</div>
+                <div class="val" id="name" style="text-transform: uppercase;">--</div>
+                
+                <div class="label">Register No.</div>
+                <div class="val" id="reg" style="font-family: monospace; font-size: 16px;">--</div>
+                
+                <div class="label">Institution</div>
+                <div class="val" id="inst">--</div>
+
+                <div class="label">Date of Issue</div>
+                <div class="val" id="dateDisplay">--</div>
+            </div>
+
+            <table class="marks-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">Sl</th>
+                        <th>Subject</th>
+                        <th style="width: 70px;">TE</th>
+                        <th style="width: 70px;">CE</th>
+                        <th style="width: 70px;">Total</th>
+                        <th style="width: 90px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="marksTable">
+                    </tbody>
+            </table>
+
+            <div class="sheet-footer">
+                <div class="signature-box">
+                    <br><br>
+                    <span style="border-top: 1px solid #000; padding-top: 5px; font-size: 13px;">Controller of Examinations</span>
+                </div>
+                
+                <div class="stamp-box" id="finalStatus">
+                    --
+                </div>
+            </div>
+
+            <div class="disclaimer">
+                This document is computer-generated and is for immediate information only. Original mark sheets are issued separately by the board.
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO96MIqHL8_r34UVJUq75aZvxsshUewKQUNnn33QSljp2LgJOjzecZixuhN_OfSn4Mig/exec";
+
+// --- LOADER ---
+function setLoading(show, msg = "Please wait...") {
+    const overlay = document.getElementById("loadingOverlay");
+    const msgEl = document.getElementById("loadingMessage");
+    if (show) {
+        msgEl.textContent = msg;
+        overlay.style.display = "flex";
+    } else {
+        overlay.style.display = "none";
+    }
+}
+
+// --- INITIAL LOAD ---
+document.addEventListener("DOMContentLoaded", () => {
+    // Set current date
+    const today = new Date();
+    document.getElementById("dateDisplay").textContent = today.toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'short', year: 'numeric'
+    });
+    loadInstitutions();
+});
+
+async function loadInstitutions() {
+    setLoading(true, "LOADING INSTITUTIONS...");
+    try {
+        const url = `${SCRIPT_URL}?action=get_institutions`;
+        const response = await fetch(url, { redirect: "follow" });
+        if (!response.ok) throw new Error("Network error");
+
+        const data = await response.json();
+        if (data && data.institutions) {
+            populateDropdown(data.institutions);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        // Fallback for demo if offline or script error
+        populateDropdown(["Govt HSS", "Model HSS", "Technical HS"]);
+    } finally {
+        setLoading(false);
+    }
+}
+
+function populateDropdown(list) {
+    const select = document.getElementById("institution");
+    select.innerHTML = '<option value="">Select Institution</option>';
+    list.forEach(instName => {
+        const option = document.createElement("option");
+        option.value = instName;
+        option.textContent = instName;
+        select.appendChild(option);
+    });
+}
+
+// --- SEARCH LOGIC ---
+async function searchResult() {
+    const errorDiv = document.getElementById("error");
+    const resultSec = document.getElementById("resultSection");
+    
+    errorDiv.textContent = "";
+    resultSec.style.display = "none";
+
+    const inst = document.getElementById("institution").value;
+    const regNo = document.getElementById("regNo").value.trim();
+
+    if (!inst || !regNo) {
+        errorDiv.textContent = "Please select institution and enter register number.";
+        return;
+    }
+
+    setLoading(true, "FETCHING RESULT...");
+
+    try {
+        const url = `${SCRIPT_URL}?regNo=${encodeURIComponent(regNo)}&institution=${encodeURIComponent(inst)}`;
+        const response = await fetch(url, { redirect: "follow" });
+        if (!response.ok) throw new Error("Network error");
+
+        const data = await response.json();
+
+        if (data) {
+            renderCertificate(data);
+        } else {
+            errorDiv.textContent = "No result found for these details.";
+        }
+    } catch (error) {
+        console.error(error);
+        errorDiv.textContent = "Connection failed. Please check internet.";
+    } finally {
+        setLoading(false);
+    }
+}
+
+function renderCertificate(data) {
+    document.getElementById("name").textContent = data.name;
+    document.getElementById("inst").textContent = data.institution;
+    document.getElementById("reg").textContent = data.registerNo;
+
+    let tbody = "";
+    let overallPass = true;
+
+    data.subjects.forEach((s, i) => {
+        // Pass Logic: TE >= 30% of Max
+        const tePassMark = s.maxTe ? (s.maxTe * 0.3) : 30; 
+        const isPass = s.te >= tePassMark;
+        if (!isPass) overallPass = false;
+
+        tbody += `
+            <tr>
+                <td style="color:#64748b;">${i + 1}</td>
+                <td class="subject-name"><strong>${s.subject}</strong></td>
+                <td>${s.te}</td>
+                <td>${s.ce}</td>
+                <td><strong>${s.te + s.ce}</strong></td>
+                <td style="font-weight:bold; color:${isPass ? '#000' : '#d32f2f'}">${isPass ? "PASS" : "FAIL"}</td>
+            </tr>`;
+    });
+
+    document.getElementById("marksTable").innerHTML = tbody;
+
+    const statusDiv = document.getElementById("finalStatus");
+    statusDiv.textContent = overallPass ? "PASSED" : "FAILED";
+    statusDiv.style.color = overallPass ? "#15803d" : "#b91c1c"; // Green or Red text
+    statusDiv.style.borderColor = overallPass ? "#15803d" : "#b91c1c"; // Match border
+
+    document.getElementById("resultSection").style.display = "block";
+    
+    // Scroll to result
+    resultSec.scrollIntoView({ behavior: 'smooth' });
+}
+
+// --- PNG DOWNLOAD ---
+function downloadPNG() {
+    setLoading(true, "GENERATING IMAGE...");
+    const element = document.getElementById("printArea");
+    
+    // Slight timeout to allow loader to render
+    setTimeout(() => {
+        html2canvas(element, {
+            scale: 2.5, // High resolution
+            useCORS: true, // For images
+            backgroundColor: "#ffffff",
+            logging: false,
+            // Capture slightly more area for margins
+            windowWidth: element.scrollWidth,
+            windowHeight: element.scrollHeight
+        }).then(canvas => {
+            const link = document.createElement("a");
+            link.download = `Result_${document.getElementById("reg").textContent}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            setLoading(false);
+        }).catch(err => {
+            console.error(err);
+            setLoading(false);
+            alert("Error generating image.");
+        });
+    }, 500);
+}
+</script>
+
+</body>
+</html>
