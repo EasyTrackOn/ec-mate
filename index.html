@@ -313,6 +313,10 @@
         font-size: 14px;
     }
 
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+
     /* --- MOBILE RESPONSIVENESS (The Key Changes) --- */
     @media (max-width: 600px) {
         body { padding: 10px; } /* Less body padding */
@@ -351,9 +355,6 @@
         .actions-bar { flex-direction: column; }
         .btn-action { justify-content: center; width: 100%; }
     }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
     /* --- 5. PRINT SPECIFIC --- */
     @media print {
         body { background: white; padding: 0; margin: 0; }
@@ -621,8 +622,8 @@ function downloadPNG() {
             backgroundColor: "#ffffff",
             logging: false,
             // Capture slightly more area for margins
-            windowWidth: '500px';//element.scrollWidth,
-            windowHeight: '600px';// element.scrollHeight
+            windowWidth: '500px',//element.scrollWidth,
+            windowHeight: '600px'//element.scrollHeight
         }).then(canvas => {
             const link = document.createElement("a");
             link.download = `Result_${document.getElementById("reg").textContent}.png`;
