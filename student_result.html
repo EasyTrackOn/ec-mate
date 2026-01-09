@@ -528,15 +528,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-function populateDropdown(list) {
+function populateDropdown(institutions) {
     const select = document.getElementById("institution");
     select.innerHTML = '<option value="">Select Institution</option>';
-    list.forEach(instName => {
-        const option = document.createElement("option");
-        option.value = instName;
-        option.textContent = instName;
-        select.appendChild(option);
-    });
+    institutions.forEach(i => {
+            // FIX: Use i.instName for the value, NOT i.id
+            // This ensures it matches the Name column in your Google Sheet
+            select.innerHTML += `<option value="${i.id}">${i.instName}</option>`;
+        });
 }
 
 
@@ -548,8 +547,10 @@ const MIN_MARKS = {
 };
 
 function renderCertificate(data) {
+    const insttext = document.getElementById("institution").selectedOptions[0].text;
+
     document.getElementById("name").textContent = data.name;
-    document.getElementById("inst").textContent = data.institution;
+    document.getElementById("inst").textContent = insttext;
     document.getElementById("reg").textContent = data.registerNo;
 
     let tbody = "";
