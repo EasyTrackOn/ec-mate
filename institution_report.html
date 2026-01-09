@@ -238,8 +238,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const data = await resp.json();
         const select = document.getElementById("institution");
         select.innerHTML = '<option value="">Select Institution</option>';
+        
         data.institutions.forEach(i => {
-            select.innerHTML += `<option value="${i}">${i}</option>`;
+            
+            select.innerHTML += `<option value="${i.id}">${i.instName}</option>`;
         });
     } catch(e) {
         console.error(e);
@@ -249,8 +251,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function generateReport() {
     const inst = document.getElementById("institution").value;
+    const insttext = document.getElementById("institution").selectedOptions[0].text;
+
     if (!inst) return alert("Select Institution");
-    document.getElementById("visibleInstName").textContent = inst;
+    document.getElementById("visibleInstName").textContent = insttext;
 
     document.getElementById("loading").style.display = 'block';
     const tbody = document.querySelector("tbody");
