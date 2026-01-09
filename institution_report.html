@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Institution Consolidated Report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    /* --- GLOBAL STYLES --- */
+    body { 
+        font-family: 'Inter', sans-serif; 
+        background: #f1f5f9; /* Light slate bg */
+        padding: 30px; 
+        color: #1e293b; 
+        margin: 0;
+    }
+
+    /* --- PAGE LAYOUT --- */
+    .page-title {
+        text-align: center;
+        color: #1e3a8a;
+        margin-bottom: 20px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* --- CONTROLS SECTION (Screen Only) --- */
+    .controls-card { 
+        max-width: 1200px;
+        margin: 0 auto 20px auto;
+        background: white; 
+        padding: 20px; 
+        border-radius: 12px; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+        display: flex; 
+        gap: 15px; 
+        align-items: center; 
+        flex-wrap: wrap;
+        border: 1px solid #e2e8f0;
+    }
+
+    select, button { 
+        padding: 12px 16px; 
+        border-radius: 8px; 
+        border: 1px solid #cbd5e1; 
+        font-family: inherit; 
+        font-size: 14px; 
+        outline: none;
+    }
+    
+    select { flex-grow: 1; max-width: 300px; }
+    
+    button { 
+        background: #1e3a8a; 
+        color: white; 
+        cursor: pointer; 
+        border: none; 
+        font-weight: 600; 
+        transition: transform 0.1s, background 0.2s; 
+    }
+    
+    button:hover { background: #172554; transform: translateY(-1px); }
+    .btn-secondary { background: white; color: #334155; border: 1px solid #cbd5e1; }
+    .btn-secondary:hover { background: #f8fafc; }
+
+    /* --- REPORT PAPER (Screen & Print) --- */
+    .report-paper { 
+        max-width: 1200px; 
+        margin: auto; 
+        background: white; 
+        padding: 40px; 
+        border-radius: 12px; 
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); 
+        min-height: 500px;
+    }
+
+    /* --- UNIFIED HEADER STYLES --- */
+    .report-header {
+        text-align: center;
+        border-bottom: 3px double #1e293b;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+        font-family: 'Merriweather', serif;
+    }
+
+    .report-header img { width: 80px; margin-bottom: 10px; }
+    .report-header h2 { margin: 0; font-size: 24px; color: #1e3a8a; text-transform: uppercase; }
+    .report-header h3 { margin: 5px 0 0; font-size: 16px; color: #64748b; font-weight: 600; }
+    .report-header .inst-name { 
+        margin-top: 15px; 
+        font-size: 20px; 
+        color: #000; 
+        font-weight: 800; 
+        text-decoration: underline; 
+        text-underline-offset: 5px;
+    }
+
+    /* --- TABLE STYLES --- */
+    .table-wrapper { overflow-x: auto; }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: 'Inter', sans-serif; }
+    
+    th { 
+        background: #f8fafc; 
+        font-weight: 700; 
+        color: #334155; 
+        padding: 12px 10px; 
+        border: 1px solid #e2e8f0;
+        white-space: nowrap; 
+    }
+    
+    td { 
+        padding: 10px; 
+        text-align: center; 
+        border: 1px solid #e2e8f0; 
+        color: #333;
+        white-space: nowrap;
+    }
+
+    tbody tr:hover { background: #f1f5f9; }
+
+    /* Badges */
+    .status-pass { color: #15803d; background: #dcfce7; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+    .status-fail { color: #b91c1c; background: #fee2e2; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+
+    /* --- PRINT OPTIMIZATION --- */
+    @media print {
+        @page { size: A4 landscape; margin: 10mm; }
+        
+        body { background: white; padding: 0; margin: 0; }
+        
+        /* Hide Screen Elements */
+        .controls-card, .page-title, #loading { display: none !important; }
+        
+        /* Reset Report Paper */
+        .report-paper { 
+            box-shadow: none; 
+            border: none; 
+            padding: 0; 
+            max-width: 100%; 
+            margin: 0; 
+            width: 100%; 
+        }
+
+        /* Adjust Header for Print */
+        .report-header { border-bottom: 2px solid #000; margin-bottom: 15px; padding-bottom: 10px; }
+        .report-header h2 { color: #000; font-size: 18pt; }
+        .report-header h3 { color: #333; font-size: 12pt; }
+        .report-header .inst-name { font-size: 16pt; color: #000; }
+
+        /* Table Tweaks */
+        table { border: 2px solid #000; font-size: 9pt; width: 100%; }
+        th, td { border: 1px solid #000; padding: 4px; color: #000; }
+        th { background: #eee !important; -webkit-print-color-adjust: exact; vertical-align: middle; white-space: normal !important; }
+        
+        /* Allow wrapping for names and headers */
+        td.name-col { white-space: normal !important; text-align: left; max-width: 150px; }
+        
+        thead { display: table-header-group; }
+        tr { page-break-inside: avoid; }
+    }
+    /* Extra styles for the complex table */
+    th { vertical-align: middle; }
+    .sub-header { font-size: 10px; color: #555; font-weight: normal; line-height: 1.2; }
+    .mark-col { width: 45px; min-width: 45px; text-align: center; }
+    .total-col { background: #f8fafc; font-weight: bold; border-left: 2px solid #e2e8f0; }
+    .status-pass { color: #15803d; background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight:700; font-size:11px; }
+    .status-fail { color: #b91c1c; background: #fee2e2; padding: 2px 6px; border-radius: 4px; font-weight:700; font-size:11px; }
+    .ab-mark { color: #dc2626; font-weight: bold; } /* Red color for AB */
+
+    @media print {
+        @page { size: A4 landscape; margin: 5mm; }
+        table { font-size: 8pt; }
+        th { font-size: 8pt !important; white-space: normal !important; }
+        .sub-header { font-size: 7pt; }
+    }
+
+    /* Add/Update this in your CSS */
+.fail-mark { 
+    color: #dc2626; /* Red */
+    font-weight: bold;
+}
+
+</style>
+</head>
+<body>
+
+    <div class="page-title">Institution Report Portal</div>
+
+    <div class="controls-card">
+        <select id="institution">
+            <option value="">Loading Institutions...</option>
+        </select>
+        <button onclick="generateReport()">Generate Report</button>
+        <button class="btn-secondary" onclick="window.print()">🖨 Print Report</button>
+        <button class="btn-secondary" onclick="window.location.href='index.html'">↩ Menu</button>
+    </div>
+
+    <div class="report-paper">
+        
+        <div class="report-header">
+            <img src="ECMATE.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>ASMI EC MATE</h2>
+            <h3>CONSOLIDATED MARK SHEET (2025-26)</h3>
+            <div class="inst-name" id="visibleInstName"></div>
+        </div>
+
+        <div id="loading" style="display:none; text-align:center; padding:40px;">
+            <div style="font-size:16px; font-weight:600; color:#1e3a8a;">Fetching Data...</div>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="reportTable">
+                <thead>
+                    </thead>
+                <tbody>
+                    <tr><td colspan="10" style="padding:40px; color:#999;">Select an institution and click Generate to view data.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO96MIqHL8_r34UVJUq75aZvxsshUewKQUNnn33QSljp2LgJOjzecZixuhN_OfSn4Mig/exec";
+
+// --- CONFIGURATION: SET PASS MARKS HERE ---
+const PASS_CRITERIA = {
+    CE_MIN: 15,    // Minimum to pass CE
+    OMR_MIN: 25,   // Minimum to pass MCQ
+    DESC_MIN: 10   // Minimum to pass Descriptive
+};
+
+// 1. Load Dropdown on Start
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const resp = await fetch(`${SCRIPT_URL}?action=get_institutions`);
+        const data = await resp.json();
+        const select = document.getElementById("institution");
+        select.innerHTML = '<option value="">Select Institution</option>';
+        data.institutions.forEach(i => {
+            select.innerHTML += `<option value="${i}">${i}</option>`;
+        });
+    } catch(e) {
+        console.error(e);
+        alert("Failed to load institutions.");
+    }
+});
+
+async function generateReport() {
+    const inst = document.getElementById("institution").value;
+    if (!inst) return alert("Select Institution");
+    document.getElementById("visibleInstName").textContent = inst;
+
+    document.getElementById("loading").style.display = 'block';
+    const tbody = document.querySelector("tbody");
+    tbody.innerHTML = "";
+    document.querySelector("thead").innerHTML = "";
+
+    try {
+        const resp = await fetch(`${SCRIPT_URL}?action=get_institution_report&institution=${encodeURIComponent(inst)}`);
+        const data = await resp.json();
+        renderTable(data);
+    } catch(e) { alert("Error loading data"); } 
+    finally { document.getElementById("loading").style.display = 'none'; }
+}
+
+function renderTable(data) {
+    const thead = document.querySelector("thead");
+    const tbody = document.querySelector("tbody");
+
+    // --- CONFIGURATION FOR PASS MARKS ---
+    // Ensure these match your requirements
+    const MIN_MARKS = {
+        CE: 15,
+        OMR: 25,
+        DESC: 10
+    };
+
+    // 1. Identify Unique Subjects
+    let uniqueSubjects = new Set();
+    data.headers.forEach(h => uniqueSubjects.add(h.split("_")[0]));
+    
+    // --- BUILD HEADER ---
+    let row1 = `<tr>
+        <th rowSpan="2" style="width:30px;">Sl</th>
+        <th rowSpan="2" style="width:80px;">Reg No</th>
+        <th rowSpan="2" style="min-width:150px; text-align:left;">Name</th>`;
+    
+    // Subject Main Headers
+    uniqueSubjects.forEach(sub => {
+        row1 += `<th colspan="4" style="border-left:2px solid #000;">${sub}</th>`;
+    });
+    
+    row1 += `<th rowSpan="2">Grand<br>Total</th><th rowSpan="2">Status</th></tr>`;
+
+    // Sub Headers with MINIMUM PASS Requirement
+    let row2 = `<tr>`;
+    uniqueSubjects.forEach(() => {
+        row2 += `
+        <th class="mark-col" style="border-left:2px solid #ccc; font-size:10px;">
+            CE<br><span style="color:#d32f2f;">(Min ${MIN_MARKS.CE})</span>
+        </th>
+        <th class="mark-col" style="font-size:10px;">
+            OMR<br><span style="color:#d32f2f;">(Min ${MIN_MARKS.OMR})</span>
+        </th>
+        <th class="mark-col" style="font-size:10px;">
+            Desc<br><span style="color:#d32f2f;">(Min ${MIN_MARKS.DESC})</span>
+        </th>
+        <th class="mark-col total-col" style="font-size:10px;">
+            Tot<br><span>(Max 100)</span>
+        </th>`;
+    });
+    row2 += `</tr>`;
+
+    thead.innerHTML = row1 + row2;
+
+    // --- BUILD ROWS ---
+    if(data.students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="100%">No records found.</td></tr>';
+        return;
+    }
+
+    let rowsHTML = "";
+    data.students.forEach((student, index) => {
+        let isOverallPass = true; 
+        let row = `<tr>
+            <td>${index + 1}</td>
+            <td>${student.regNo}</td>
+            <td style="text-align:left; font-weight:600;">${student.name}</td>`;
+        
+        uniqueSubjects.forEach(sub => {
+            // 1. Get Values
+            const rawCE = student.marks[`${sub}_CE`];
+            const rawOMR = student.marks[`${sub}_OMR`];
+            const rawDesc = student.marks[`${sub}_DESC`];
+
+            // 2. Convert to Numbers for Calculation (AB or Empty becomes 0)
+            const valCE = (rawCE === "AB" || !rawCE) ? 0 : Number(rawCE);
+            const valOMR = (rawOMR === "AB" || !rawOMR) ? 0 : Number(rawOMR);
+            const valDesc = (rawDesc === "AB" || !rawDesc) ? 0 : Number(rawDesc);
+            
+            const subjectTotal = valCE + valOMR + valDesc;
+
+            // 3. Check Failures
+            // (Fail if value is less than Min OR if it is explicitly "AB")
+            const failCE = valCE < MIN_MARKS.CE;
+            const failOMR = valOMR < MIN_MARKS.OMR;
+            const failDesc = valDesc < MIN_MARKS.DESC;
+
+            if (failCE || failOMR || failDesc) isOverallPass = false;
+
+            // 4. Determine Styles (Red if failed or AB)
+            const styleCE = (rawCE === 'AB' || failCE) ? 'fail-mark' : '';
+            const styleOMR = (rawOMR === 'AB' || failOMR) ? 'fail-mark' : '';
+            const styleDesc = (rawDesc === 'AB' || failDesc) ? 'fail-mark' : '';
+
+            // 5. Build Cells
+            // We use (rawCE || 0) to ensure we display 0 instead of empty string if data is missing
+            row += `
+            <td style="border-left:2px solid #e2e8f0;" class="${styleCE}">${rawCE || 0}</td>
+            <td class="${styleOMR}">${rawOMR || 0}</td>
+            <td class="${styleDesc}">${rawDesc || 0}</td>
+            <td class="total-col">${subjectTotal}</td>`;
+        });
+
+        const statusLabel = isOverallPass ? "PASS" : "FAIL";
+        const statusClass = isOverallPass ? "status-pass" : "status-fail";
+
+        row += `<td><strong>${student.grandTotal}</strong></td>
+                <td><span class="${statusClass}">${statusLabel}</span></td>
+                </tr>`;
+        
+        rowsHTML += row;
+    });
+
+    tbody.innerHTML = rowsHTML;
+}
+</script>
+
+</body>
+</html>
