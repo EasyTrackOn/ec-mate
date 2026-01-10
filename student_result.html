@@ -312,6 +312,8 @@
         letter-spacing: 1px;
         font-size: 14px;
     }
+    .status-pass { color: #15803d; background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight:700; font-size:11px; }
+    .status-fail { color: #b91c1c; background: #fee2e2; padding: 2px 6px; border-radius: 4px; font-weight:700; font-size:11px; }
 
     @keyframes spin { 100% { transform: rotate(360deg); } }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -582,7 +584,9 @@ function renderCertificate(data) {
         const styleCE = (rawCE === 'Ab' || valCE < MIN_MARKS.CE) ? 'color:#d32f2f; font-weight:bold;' : '';
         const styleOMR = (rawOMR === 'Ab' || valOMR < MIN_MARKS.OMR) ? 'color:#d32f2f; font-weight:bold;' : '';
         const styleDesc = (rawDesc === 'Ab' || valDesc < MIN_MARKS.DESC) ? 'color:#d32f2f; font-weight:bold;' : '';
-        const statusColor = isSubjectPass ? '#000' : '#d32f2f';
+        //const statusColor = isSubjectPass ? '#000' : '#d32f2f';
+        const statusColor = isSubjectPass ? "status-pass" : "status-fail"; //'#000' : '#d32f2f';
+        
 
         tbody += `
             <tr>
@@ -689,4 +693,5 @@ function downloadPNG() {
 
 </body>
 </html>
+
 
