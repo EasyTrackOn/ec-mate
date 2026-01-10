@@ -598,7 +598,7 @@ function renderCertificate(data) {
                 <td style="${styleDesc}">${rawDesc || 0}</td>
                 
                 <td><strong>${total}</strong></td>
-                <td style="font-weight:bold; color:${statusColor}">
+                <td style="font-weight:bold; color:${statusColor}" class="${statusColor}">
                     ${isSubjectPass ? "PASS" : "FAIL"}
                 </td>
             </tr>`;
@@ -693,5 +693,6 @@ function downloadPNG() {
 
 </body>
 </html>
+
 
 
