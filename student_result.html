@@ -557,15 +557,15 @@ function renderCertificate(data) {
     let overallPass = true;
 
     data.subjects.forEach((s, i) => {
-        // 1. Safe Number Conversion (Handle "AB" or empty)
-        // We keep the "raw" value for display (to show "AB"), but use "val" for math
+        // 1. Safe Number Conversion (Handle "Ab" or empty)
+        // We keep the "raw" value for display (to show "Ab"), but use "val" for math
         const rawCE = s.ce;
         const rawOMR = s.omr;
         const rawDesc = s.desc;
 
-        const valCE = (rawCE === "AB" || !rawCE) ? 0 : Number(rawCE);
-        const valOMR = (rawOMR === "AB" || !rawOMR) ? 0 : Number(rawOMR);
-        const valDesc = (rawDesc === "AB" || !rawDesc) ? 0 : Number(rawDesc);
+        const valCE = (rawCE === "Ab" || !rawCE) ? 0 : Number(rawCE);
+        const valOMR = (rawOMR === "Ab" || !rawOMR) ? 0 : Number(rawOMR);
+        const valDesc = (rawDesc === "Ab" || !rawDesc) ? 0 : Number(rawDesc);
 
         const total = valCE + valOMR + valDesc;
 
@@ -579,9 +579,9 @@ function renderCertificate(data) {
         if (!isSubjectPass) overallPass = false;
 
         // 3. Styling for Failed Marks (Red text)
-        const styleCE = (rawCE === 'AB' || valCE < MIN_MARKS.CE) ? 'color:#d32f2f; font-weight:bold;' : '';
-        const styleOMR = (rawOMR === 'AB' || valOMR < MIN_MARKS.OMR) ? 'color:#d32f2f; font-weight:bold;' : '';
-        const styleDesc = (rawDesc === 'AB' || valDesc < MIN_MARKS.DESC) ? 'color:#d32f2f; font-weight:bold;' : '';
+        const styleCE = (rawCE === 'Ab' || valCE < MIN_MARKS.CE) ? 'color:#d32f2f; font-weight:bold;' : '';
+        const styleOMR = (rawOMR === 'Ab' || valOMR < MIN_MARKS.OMR) ? 'color:#d32f2f; font-weight:bold;' : '';
+        const styleDesc = (rawDesc === 'Ab' || valDesc < MIN_MARKS.DESC) ? 'color:#d32f2f; font-weight:bold;' : '';
         const statusColor = isSubjectPass ? '#000' : '#d32f2f';
 
         tbody += `
@@ -689,3 +689,4 @@ function downloadPNG() {
 
 </body>
 </html>
+
