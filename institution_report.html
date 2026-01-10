@@ -167,7 +167,7 @@
     .total-col { background: #f8fafc; font-weight: bold; border-left: 2px solid #e2e8f0; }
     .status-pass { color: #15803d; background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight:700; font-size:11px; }
     .status-fail { color: #b91c1c; background: #fee2e2; padding: 2px 6px; border-radius: 4px; font-weight:700; font-size:11px; }
-    .ab-mark { color: #dc2626; font-weight: bold; } /* Red color for AB */
+    .ab-mark { color: #dc2626; font-weight: bold; } /* Red color for Ab */
 
     @media print {
         @page { size: A4 landscape; margin: 5mm; }
@@ -339,25 +339,25 @@ function renderTable(data) {
             const rawOMR = student.marks[`${sub}_OMR`];
             const rawDesc = student.marks[`${sub}_DESC`];
 
-            // 2. Convert to Numbers for Calculation (AB or Empty becomes 0)
-            const valCE = (rawCE === "AB" || !rawCE) ? 0 : Number(rawCE);
-            const valOMR = (rawOMR === "AB" || !rawOMR) ? 0 : Number(rawOMR);
-            const valDesc = (rawDesc === "AB" || !rawDesc) ? 0 : Number(rawDesc);
+            // 2. Convert to Numbers for Calculation (Ab or Empty becomes 0)
+            const valCE = (rawCE === "Ab" || !rawCE) ? 0 : Number(rawCE);
+            const valOMR = (rawOMR === "Ab" || !rawOMR) ? 0 : Number(rawOMR);
+            const valDesc = (rawDesc === "Ab" || !rawDesc) ? 0 : Number(rawDesc);
             
             const subjectTotal = valCE + valOMR + valDesc;
 
             // 3. Check Failures
-            // (Fail if value is less than Min OR if it is explicitly "AB")
+            // (Fail if value is less than Min OR if it is explicitly "Ab")
             const failCE = valCE < MIN_MARKS.CE;
             const failOMR = valOMR < MIN_MARKS.OMR;
             const failDesc = valDesc < MIN_MARKS.DESC;
 
             if (failCE || failOMR || failDesc) isOverallPass = false;
 
-            // 4. Determine Styles (Red if failed or AB)
-            const styleCE = (rawCE === 'AB' || failCE) ? 'fail-mark' : '';
-            const styleOMR = (rawOMR === 'AB' || failOMR) ? 'fail-mark' : '';
-            const styleDesc = (rawDesc === 'AB' || failDesc) ? 'fail-mark' : '';
+            // 4. Determine Styles (Red if failed or Ab)
+            const styleCE = (rawCE === 'Ab' || failCE) ? 'fail-mark' : '';
+            const styleOMR = (rawOMR === 'Ab' || failOMR) ? 'fail-mark' : '';
+            const styleDesc = (rawDesc === 'Ab' || failDesc) ? 'fail-mark' : '';
 
             // 5. Build Cells
             // We use (rawCE || 0) to ensure we display 0 instead of empty string if data is missing
@@ -384,3 +384,4 @@ function renderTable(data) {
 
 </body>
 </html>
+
