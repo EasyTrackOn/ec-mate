@@ -14,7 +14,6 @@
         --success-bg: #dcfce7;
         --warning: #ca8a04;       /* Yellow/Orange */
         --warning-bg: #fef9c3;
-        
         --text-dark: #1e293b;
         --text-light: #64748b;
         --border: #e2e8f0;
@@ -311,9 +310,18 @@ async function handleLogin(isAuto = false) {
 }
 
 /* --- DASHBOARD RENDERER --- */
+// CORE LOGIC: Render Dashboard based on Status
 function renderDashboard(status, applied, payment) {
     document.getElementById("studentName").textContent = currentStudent.name;
     document.getElementById("studentReg").textContent = currentStudent.regNo;
+
+    // --- NEW: SAVE APPLIED DATA TO STORAGE ---
+    // This ensures openEditMode() always knows what is already saved
+    const appliedIds = applied.map(item => item.id); // e.g., ["Maths_CE", "Physics_OMR"]
+    sessionStorage.setItem("reval_applied_list", JSON.stringify(appliedIds));
+    
+    // Update global variable as backup
+    //appliedList = appliedIds; 
 
     const badge = document.getElementById("statusBadge");
     const desc = document.getElementById("statusDesc");
@@ -393,7 +401,6 @@ function renderDashboard(status, applied, payment) {
     }
 }
 
-/* --- EDIT ACTIONS --- */
 function openEditMode() {
     document.getElementById("viewMode").classList.add("hidden");
     document.getElementById("editMode").classList.remove("hidden");
@@ -401,19 +408,47 @@ function openEditMode() {
     const tbody = document.getElementById("editTableBody");
     tbody.innerHTML = "";
 
+    // --- NEW: RETRIEVE FROM STORAGE ---
+    // Try to get from session, fallback to global variable
+    const storedList = sessionStorage.getItem("reval_applied_list");
+    const currentAppliedList = storedList ? JSON.parse(storedList) : appliedList;
+
     currentStudent.subjects.forEach(sub => {
         const createCheck = (type, obj) => {
             if(!obj) return '-';
+            
+            const cleanSub = sub.name.trim();
+            const cleanType = type.trim();
             const id = `${currentStudent.regNo}_${cleanSub}_${cleanType}`;
             
-            const isChecked = appliedList.includes(id) ? "checked" : "";
+            // Check against the retrieved list
+            const isPreSelected = currentAppliedList.includes(id);
+            const checkAttr = isPreSelected ? "checked" : "";
+            
+            const savedLabel = isPreSelected 
+                ? '<span style="font-size:10px; color:#166534; font-weight:bold; display:block;">(Saved)</span>' 
+                : '';
+
             return `
                 <div style="text-align:center">
-                    <input type="checkbox" onchange="calcDraft()" data-sub="${sub.name}" data-type="${type}" ${isChecked} style="width:18px; height:18px; cursor:pointer;">
+                    <input type="checkbox" 
+                           onchange="calcDraft()" 
+                           data-sub="${cleanSub}" 
+                           data-type="${cleanType}" 
+                           ${checkAttr} 
+                           style="width:18px; height:18px; cursor:pointer;">
+                    
                     <div class="mark-val">${obj.mark}</div>
+                    ${savedLabel}
                 </div>`;
         };
-        tbody.innerHTML += `<tr><td>${sub.name}</td><td>${createCheck("CE", sub.CE)}</td><td>${createCheck("OMR", sub.OMR)}</td><td>${createCheck("DESC", sub.DESC)}</td></tr>`;
+        
+        tbody.innerHTML += `<tr>
+            <td style="text-align:left">${sub.name}</td>
+            <td>${createCheck("CE", sub.CE)}</td>
+            <td>${createCheck("OMR", sub.OMR)}</td>
+            <td>${createCheck("DESC", sub.DESC)}</td>
+        </tr>`;
     });
     calcDraft();
 }
