@@ -403,7 +403,8 @@ function openEditMode() {
     currentStudent.subjects.forEach(sub => {
         const createCheck = (type, obj) => {
             if(!obj) return '-';
-            const id = `${sub.name}_${type}`;
+            const id = `${currentStudent.regNo}_${cleanSub}_${cleanType}`;
+            
             const isChecked = appliedList.includes(id) ? "checked" : "";
             return `
                 <div style="text-align:center">
