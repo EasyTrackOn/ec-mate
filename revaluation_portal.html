@@ -74,6 +74,7 @@
     .btn-primary { background: var(--primary); color: white; }
     .btn-success { background: var(--success); color: white; }
     .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-dark); margin-top: 10px; }
+    .btn-secondary { background: #f1f5f9; color: var(--text-light); border: 1px solid var(--border); font-size: 12px; padding: 5px 10px; width: auto; cursor: pointer; border-radius: 6px;}
     .btn-sm { padding: 6px 12px; font-size: 12px; width: auto; }
 
     /* --- DASHBOARD HEADER --- */
@@ -97,6 +98,10 @@
     td:last-child { text-align: center; }
     tr:last-child td { border-bottom: none; }
     
+    /* Interactive Rows */
+    .interactive-row { cursor: pointer; transition: background 0.15s; }
+    .interactive-row:hover { background: #f8fafc; }
+
     .mark-val { font-size: 12px; color: var(--text-light); }
 
     /* --- PAYMENT BOX --- */
@@ -158,10 +163,10 @@
                     <h2 id="studentName">Student Name</h2>
                     <span id="studentReg">Reg No</span>
                 </div>
-                <button onclick="handleLogout()" class="btn btn-outline btn-sm">Sign Out</button>
-                <button class="btn-secondary" onclick="window.location.href='index.html'">↩ Menu</button>
-    
-            
+                <div>
+                    <button class="btn-secondary" onclick="window.location.href='index.html'">↩ Menu</button>
+                    <button onclick="handleLogout()" class="btn btn-outline btn-sm">Sign Out</button>
+                </div>
             </div>
 
             <div class="status-area">
@@ -217,6 +222,10 @@
                 <div class="form-group">
                     <label>Transaction ID / Reference No</label>
                     <input type="text" id="payRef" class="form-control" placeholder="Enter Ref No">
+                </div>
+                <div class="form-group">
+                    <label>Transaction Date</label>
+                    <input type="text" id="payDate" class="form-control" placeholder="Enter Date">
                 </div>
                 
                 <button onclick="submitPayment()" id="btnPay" class="btn btn-success">Confirm Payment</button>
@@ -310,18 +319,14 @@ async function handleLogin(isAuto = false) {
 }
 
 /* --- DASHBOARD RENDERER --- */
-// CORE LOGIC: Render Dashboard based on Status
 function renderDashboard(status, applied, payment) {
     document.getElementById("studentName").textContent = currentStudent.name;
     document.getElementById("studentReg").textContent = currentStudent.regNo;
 
-    // --- NEW: SAVE APPLIED DATA TO STORAGE ---
-    // This ensures openEditMode() always knows what is already saved
-    const appliedIds = applied.map(item => item.id); // e.g., ["Maths_CE", "Physics_OMR"]
+    // Save simple list of subjects ["Maths", "Physics"]
+    const appliedIds = applied.map(item => item.subject); 
     sessionStorage.setItem("reval_applied_list", JSON.stringify(appliedIds));
-    
-    // Update global variable as backup
-    //appliedList = appliedIds; 
+    appliedList = appliedIds; 
 
     const badge = document.getElementById("statusBadge");
     const desc = document.getElementById("statusDesc");
@@ -329,11 +334,14 @@ function renderDashboard(status, applied, payment) {
     const viewBody = document.querySelector("#viewTable tbody");
     const emptyMsg = document.getElementById("emptyMsg");
     const table = document.getElementById("viewTable");
+    const viewHead = document.querySelector("#viewTable thead tr");
 
     viewBody.innerHTML = "";
     actions.innerHTML = "";
+    
+    // Update Header (Remove Component Column)
+    viewHead.innerHTML = `<th>Subject</th><th style="text-align:center">Fee</th>`;
 
-    // Table Logic
     if (applied.length === 0) {
         table.classList.add("hidden");
         emptyMsg.classList.remove("hidden");
@@ -341,7 +349,11 @@ function renderDashboard(status, applied, payment) {
         table.classList.remove("hidden");
         emptyMsg.classList.add("hidden");
         applied.forEach(item => {
-            viewBody.innerHTML += `<tr><td style="font-weight:500">${item.subject}</td><td style="text-align:center"><span style="background:#f1f5f9; padding:2px 8px; border-radius:4px; font-size:12px;">${item.component}</span></td></tr>`;
+            viewBody.innerHTML += `
+                <tr>
+                    <td style="font-weight:500">${item.subject}</td>
+                    <td style="text-align:center">₹${FEE}</td>
+                </tr>`;
         });
     }
 
@@ -357,7 +369,7 @@ function renderDashboard(status, applied, payment) {
         badge.textContent = "Pending Payment";
         desc.textContent = "Review your selection and complete payment.";
         actions.innerHTML = `
-            <button onclick="openPaymentMode(${applied.length})" class="btn btn-success">Pay Now (₹${applied.length * FEE})</button>
+            <button onclick="openPaymentMode(${applied.length})" class="btn btn-success">Add Payment details (₹${applied.length * FEE})</button>
             <button onclick="openEditMode()" class="btn btn-outline">Edit Selection</button>
         `;
     
@@ -401,56 +413,75 @@ function renderDashboard(status, applied, payment) {
     }
 }
 
+// 3. UPDATE OPEN EDIT MODE (Subject Selection)
 function openEditMode() {
     document.getElementById("viewMode").classList.add("hidden");
     document.getElementById("editMode").classList.remove("hidden");
     
+    // Update Header
+    const thead = document.querySelector("#editMode table thead tr");
+    thead.innerHTML = `<th style="width:50px">Select</th><th>Subject</th><th>Marks (CE/OMR/Desc)</th>`;
+
     const tbody = document.getElementById("editTableBody");
     tbody.innerHTML = "";
 
-    // --- NEW: RETRIEVE FROM STORAGE ---
-    // Try to get from session, fallback to global variable
     const storedList = sessionStorage.getItem("reval_applied_list");
     const currentAppliedList = storedList ? JSON.parse(storedList) : appliedList;
 
     currentStudent.subjects.forEach(sub => {
-        const createCheck = (type, obj) => {
-            if(!obj) return '-';
-            
-            const cleanSub = sub.name.trim();
-            const cleanType = type.trim();
-            const id = `${currentStudent.regNo}_${cleanSub}_${cleanType}`;
-            
-            // Check against the retrieved list
-            const isPreSelected = currentAppliedList.includes(id);
-            const checkAttr = isPreSelected ? "checked" : "";
-            
-            const savedLabel = isPreSelected 
-                ? '<span style="font-size:10px; color:#166534; font-weight:bold; display:block;">(Saved)</span>' 
-                : '';
+        const cleanSub = sub.name.trim();
+        const isPreSelected = currentAppliedList.includes(cleanSub);
+        const checkAttr = isPreSelected ? "checked" : "";
+        const savedLabel = isPreSelected ? '<span style="font-size:10px; color:#166534; font-weight:bold;">(Saved)</span>' : '';
 
-            return `
-                <div style="text-align:center">
-                    <input type="checkbox" 
-                           onchange="calcDraft()" 
-                           data-sub="${cleanSub}" 
-                           data-type="${cleanType}" 
-                           ${checkAttr} 
-                           style="width:18px; height:18px; cursor:pointer;">
-                    
-                    <div class="mark-val">${obj.mark}</div>
+        // Helper to show marks safely
+        const showMark = (m) => m ? m.mark : '-';
+        const markStr = `<span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-right:5px; font-size:12px;">CE: ${showMark(sub.CE)}</span>
+                         <span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-right:5px; font-size:12px;">OMR: ${showMark(sub.OMR)}</span>
+                         <span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:12px;">Desc: ${showMark(sub.DESC)}</span>`;
+
+        tbody.innerHTML += `
+            <tr onclick="toggleRow(this)" class="interactive-row">
+                <td style="text-align:center">
+                    <input type="checkbox" onchange="calcDraft()" data-sub="${cleanSub}" ${checkAttr} style="width:18px; height:18px; cursor:pointer;">
+                </td>
+                <td>
+                    <div style="font-weight:600;">${sub.name}</div>
+                    <div> ${markStr}</div>
                     ${savedLabel}
-                </div>`;
-        };
-        
-        tbody.innerHTML += `<tr>
-            <td style="text-align:left">${sub.name}</td>
-            <td>${createCheck("CE", sub.CE)}</td>
-            <td>${createCheck("OMR", sub.OMR)}</td>
-            <td>${createCheck("DESC", sub.DESC)}</td>
-        </tr>`;
+                </td>
+            </tr>`;
     });
     calcDraft();
+}
+
+// Helper to toggle checkbox when clicking row
+function toggleRow(row) {
+    if(event.target.type === 'checkbox') return;
+    const cb = row.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+    calcDraft();
+}
+
+// 4. UPDATE SAVE DRAFT (Send Subject Only)
+async function saveDraft() {
+    const checks = document.querySelectorAll('#editTableBody input:checked');
+    if(checks.length === 0) return alert("Please select at least one subject.");
+    
+    const selections = [];
+    checks.forEach(c => selections.push({ subject: c.dataset.sub })); // Only Subject needed
+
+    showLoading("Saving Selection...");
+    
+    try {
+        await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "save_draft", regNo: currentStudent.regNo, name: currentStudent.name, selections: selections })
+        });
+        await handleLogin(true); 
+        cancelEdit();
+    } catch(e) { alert("Error saving"); }
+    finally { hideLoading(); }
 }
 
 function calcDraft() {
@@ -461,26 +492,6 @@ function calcDraft() {
 function cancelEdit() {
     document.getElementById("editMode").classList.add("hidden");
     document.getElementById("viewMode").classList.remove("hidden");
-}
-
-async function saveDraft() {
-    const checks = document.querySelectorAll('#editTableBody input:checked');
-    if(checks.length === 0) return alert("Please select at least one paper.");
-    
-    const selections = [];
-    checks.forEach(c => selections.push({subject: c.dataset.sub, component: c.dataset.type}));
-
-    showLoading("Saving Selection...");
-    
-    try {
-        await fetch(SCRIPT_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "save_draft", regNo: currentStudent.regNo, name: currentStudent.name, selections: selections })
-        });
-        await handleLogin(true); // Refresh
-        cancelEdit();
-    } catch(e) { alert("Error saving"); }
-    finally { hideLoading(); }
 }
 
 /* --- PAYMENT ACTIONS --- */
@@ -497,6 +508,7 @@ function cancelPayment() {
 
 async function submitPayment() {
     const ref = document.getElementById("payRef").value.trim();
+    const date = document.getElementById("payDate").value.trim();
     const amt = document.getElementById("payAmountDisplay").textContent.replace("₹","");
     if(!ref) return alert("Please enter Transaction Reference Number");
 
@@ -505,7 +517,7 @@ async function submitPayment() {
     try {
         await fetch(SCRIPT_URL, {
             method: "POST",
-            body: JSON.stringify({ action: "submit_payment", regNo: currentStudent.regNo, name: currentStudent.name, ref: ref, amount: amt })
+            body: JSON.stringify({ action: "submit_payment", regNo: currentStudent.regNo, name: currentStudent.name, ref: ref,paymentDate: date,amount: amt })
         });
         await handleLogin(true); // Refresh
         cancelPayment();
@@ -521,4 +533,3 @@ function handleLogout() {
 </script>
 </body>
 </html>
-
