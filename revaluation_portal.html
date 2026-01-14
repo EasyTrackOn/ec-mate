@@ -6,123 +6,53 @@
 <title>Student Revaluation Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    /* --- RESET & VARIABLES --- */
-    :root {
-        --primary: #1e3a8a;       /* Dark Blue */
-        --primary-light: #eff6ff;
-        --success: #166534;       /* Green */
-        --success-bg: #dcfce7;
-        --warning: #ca8a04;       /* Yellow/Orange */
-        --warning-bg: #fef9c3;
-        --text-dark: #1e293b;
-        --text-light: #64748b;
-        --border: #e2e8f0;
-    }
-    
+    :root { --primary: #1e3a8a; --primary-light: #eff6ff; --success: #166534; --success-bg: #dcfce7; --warning: #ca8a04; --warning-bg: #fef9c3; --text-dark: #1e293b; --text-light: #64748b; --border: #e2e8f0; }
     body { font-family: 'Inter', sans-serif; background: #f8fafc; margin: 0; padding: 20px; color: var(--text-dark); display: flex; justify-content: center; min-height: 100vh; }
-    
-    /* --- UTILITIES --- */
     .hidden { display: none !important; }
     .fade-in { animation: fadeIn 0.3s ease-in; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* --- MAIN CONTAINER --- */
-    .app-container {
-        width: 100%; max-width: 600px;
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        overflow: hidden;
-        position: relative;
-    }
-
-    /* --- HEADER --- */
-    .app-header {
-        background: var(--primary);
-        padding: 30px 20px;
-        text-align: center;
-        color: white;
-    }
+    .app-container { width: 100%; max-width: 600px; background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; position: relative; }
+    .app-header { background: var(--primary); padding: 30px 20px; text-align: center; color: white; }
     .app-header h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
     .app-header p { margin: 5px 0 0; opacity: 0.8; font-size: 13px; }
-
-    /* --- CONTENT BODY --- */
     .app-body { padding: 30px; }
-
-    /* --- FORMS --- */
     .form-group { margin-bottom: 20px; text-align: left; }
     .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-dark); }
-    .form-control {
-        width: 100%; padding: 12px 15px;
-        border: 2px solid var(--border);
-        border-radius: 8px;
-        font-size: 15px; outline: none; transition: border-color 0.2s;
-        box-sizing: border-box;
-    }
+    .form-control { width: 100%; padding: 12px 15px; border: 2px solid var(--border); border-radius: 8px; font-size: 15px; outline: none; transition: border-color 0.2s; box-sizing: border-box; }
     .form-control:focus { border-color: var(--primary); }
-
-    /* --- BUTTONS --- */
-    .btn {
-        width: 100%; padding: 14px;
-        border: none; border-radius: 8px;
-        font-weight: 600; font-size: 15px;
-        cursor: pointer; transition: transform 0.1s, opacity 0.2s;
-    }
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; transition: transform 0.1s, opacity 0.2s; }
     .btn:active { transform: scale(0.98); }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    
     .btn-primary { background: var(--primary); color: white; }
     .btn-success { background: var(--success); color: white; }
     .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-dark); margin-top: 10px; }
     .btn-secondary { background: #f1f5f9; color: var(--text-light); border: 1px solid var(--border); font-size: 12px; padding: 5px 10px; width: auto; cursor: pointer; border-radius: 6px;}
     .btn-sm { padding: 6px 12px; font-size: 12px; width: auto; }
-
-    /* --- DASHBOARD HEADER --- */
     .dash-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
     .student-info h2 { margin: 0; font-size: 18px; color: var(--primary); }
     .student-info span { font-size: 13px; color: var(--text-light); }
-
-    /* --- STATUS BADGE AREA --- */
     .status-area { text-align: center; margin-bottom: 25px; padding: 20px; background: #fafafa; border-radius: 12px; border: 1px dashed var(--border); }
     .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    
     .status-pending { background: var(--warning-bg); color: var(--warning); }
     .status-submitted { background: var(--primary-light); color: var(--primary); }
     .status-verified { background: var(--success-bg); color: var(--success); }
-
-    /* --- TABLES --- */
     .table-container { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th { background: #f8fafc; padding: 12px; text-align: left; font-weight: 600; color: var(--text-light); border-bottom: 1px solid var(--border); }
     td { padding: 12px; border-bottom: 1px solid var(--border); }
     td:last-child { text-align: center; }
     tr:last-child td { border-bottom: none; }
-    
-    /* Interactive Rows */
     .interactive-row { cursor: pointer; transition: background 0.15s; }
     .interactive-row:hover { background: #f8fafc; }
-
     .mark-val { font-size: 12px; color: var(--text-light); }
-
-    /* --- PAYMENT BOX --- */
     .pay-summary { background: var(--primary-light); padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; border: 1px solid #bfdbfe; }
     .pay-amount { font-size: 24px; font-weight: 800; color: var(--primary); display: block; margin: 5px 0 15px 0; }
-    
-    /* --- VERIFIED BOX --- */
     .verified-box { background: var(--success-bg); border: 1px solid #86efac; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px; }
     .check-icon { font-size: 24px; background: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--success); }
-
-    /* --- LOADER --- */
     .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 999; display: flex; justify-content: center; align-items: center; }
     .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* --- MOBILE TWEAKS --- */
-    @media (max-width: 480px) {
-        .app-body { padding: 20px; }
-        .dash-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-        .btn-sm { width: 100%; }
-    }
+    @media (max-width: 480px) { .app-body { padding: 20px; } .dash-header { flex-direction: column; align-items: flex-start; gap: 10px; } .btn-sm { width: 100%; } }
 </style>
 </head>
 <body>
@@ -135,7 +65,6 @@
 </div>
 
 <div class="app-container fade-in">
-    
     <div class="app-header">
         <h1>Revaluation Portal</h1>
         <p>Examination Management System</p>
@@ -144,29 +73,16 @@
     <div class="app-body">
         
         <div id="loginSection" class="hidden">
-            <div class="form-group">
-                <label>Register Number</label>
-                <input type="text" id="regNo" class="form-control" placeholder="Enter Reg No">
-            </div>
-            <div class="form-group">
-                <label>Mobile Number (Last 4 Digits)</label>
-                <input type="text" id="mobile" class="form-control" maxlength="4" placeholder="e.g. 9876">
-            </div>
+            <div class="form-group"><label>Register Number</label><input type="text" id="regNo" class="form-control" placeholder="Enter Reg No"></div>
+            <div class="form-group"><label>Mobile Number (Last 4 Digits)</label><input type="text" id="mobile" class="form-control" maxlength="4" placeholder="e.g. 9876"></div>
             <button onclick="handleLogin()" id="btnLogin" class="btn btn-primary">Secure Login</button>
             <p id="loginError" style="color:#ef4444; text-align:center; margin-top:15px; font-size:14px;"></p>
         </div>
 
         <div id="dashboardSection" class="hidden">
-            
             <div class="dash-header">
-                <div class="student-info">
-                    <h2 id="studentName">Student Name</h2>
-                    <span id="studentReg">Reg No</span>
-                </div>
-                <div>
-                    <button class="btn-secondary" onclick="window.location.href='index.html'">↩ Menu</button>
-                    <button onclick="handleLogout()" class="btn btn-outline btn-sm">Sign Out</button>
-                </div>
+                <div class="student-info"><h2 id="studentName">Student Name</h2><span id="studentReg">Reg No</span></div>
+                <div><button class="btn-secondary" onclick="window.location.href='index.html'">↩ Menu</button> <button onclick="handleLogout()" class="btn btn-outline btn-sm">Sign Out</button></div>
             </div>
 
             <div class="status-area">
@@ -176,17 +92,10 @@
 
             <div id="viewMode">
                 <h3 style="font-size:15px; font-weight:600; margin-bottom:10px;">Applied Subjects</h3>
-                
                 <div class="table-container">
-                    <table id="viewTable">
-                        <thead><tr><th>Subject</th><th style="text-align:center">Type</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                    <div id="emptyMsg" class="hidden" style="padding:30px; text-align:center; color:var(--text-light);">
-                        No subjects selected for revaluation yet.
-                    </div>
+                    <table id="viewTable"><thead><tr><th>Subject</th><th style="text-align:center">Type</th></tr></thead><tbody></tbody></table>
+                    <div id="emptyMsg" class="hidden" style="padding:30px; text-align:center; color:var(--text-light);">No subjects selected yet.</div>
                 </div>
-
                 <div id="actionButtons"></div>
             </div>
 
@@ -195,19 +104,10 @@
                     <h3 style="margin:0; font-size:16px;">Select Papers</h3>
                     <span style="background:var(--primary-light); color:var(--primary); padding:4px 8px; border-radius:6px; font-size:12px; font-weight:bold;">Fee: ₹<span id="feeDisplay">50</span></span>
                 </div>
-
-                <div class="table-container">
-                    <table>
-                        <thead><tr><th>Subject</th><th style="text-align:center">CE</th><th style="text-align:center">OMR</th><th style="text-align:center">Desc</th></tr></thead>
-                        <tbody id="editTableBody"></tbody>
-                    </table>
-                </div>
-
+                <div class="table-container"><table><thead><tr><th>Subject</th><th>Marks (CE/OMR/Desc)</th></tr></thead><tbody id="editTableBody"></tbody></table></div>
                 <div style="background:#f8fafc; padding:15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <span style="font-weight:600;">Total Payable:</span>
-                    <span id="calcTotal" style="font-size:18px; font-weight:800; color:var(--primary);">₹0</span>
+                    <span style="font-weight:600;">Total Payable:</span><span id="calcTotal" style="font-size:18px; font-weight:800; color:var(--primary);">₹0</span>
                 </div>
-
                 <button onclick="saveDraft()" id="btnSave" class="btn btn-primary">Save & Review</button>
                 <button onclick="cancelEdit()" class="btn btn-outline">Cancel</button>
             </div>
@@ -218,112 +118,64 @@
                     <span id="payAmountDisplay" class="pay-amount">₹0</span>
                     <small style="color:var(--text-light)">Please complete payment via UPI/Bank</small>
                 </div>
-
-                <div class="form-group">
-                    <label>Transaction ID / Reference No</label>
-                    <input type="text" id="payRef" class="form-control" placeholder="Enter Ref No">
-                </div>
-                <div class="form-group">
-                    <label>Transaction Date</label>
-                    <input type="text" id="payDate" class="form-control" placeholder="Enter Date">
-                </div>
-                
+                <div class="form-group"><label>Transaction ID / Reference No</label><input type="text" id="payRef" class="form-control" placeholder="Enter Ref No"></div>
+                <div class="form-group"><label>Transaction Date</label><input type="text" id="payDate" class="form-control" placeholder="YYYY-MM-DD"></div>
                 <button onclick="submitPayment()" id="btnPay" class="btn btn-success">Confirm Payment</button>
                 <button onclick="cancelPayment()" class="btn btn-outline">Go Back</button>
             </div>
-
         </div>
-
     </div>
 </div>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO96MIqHL8_r34UVJUq75aZvxsshUewKQUNnn33QSljp2LgJOjzecZixuhN_OfSn4Mig/exec";
-
 let currentStudent = null;
 let appliedList = []; 
 let FEE = 50;
 
-/* --- UI HELPERS --- */
-function showLoading(msg) {
-    document.getElementById("loaderText").textContent = msg || "Loading...";
-    document.getElementById("globalLoader").classList.remove("hidden");
-}
-function hideLoading() {
-    document.getElementById("globalLoader").classList.add("hidden");
-}
+function showLoading(msg) { document.getElementById("loaderText").textContent = msg || "Loading..."; document.getElementById("globalLoader").classList.remove("hidden"); }
+function hideLoading() { document.getElementById("globalLoader").classList.add("hidden"); }
 
-/* --- INIT --- */
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         const resp = await fetch(`${SCRIPT_URL}?action=get_settings`);
         const res = await resp.json();
         FEE = Number(res.fee) || 50;
         document.getElementById("feeDisplay").textContent = FEE;
-
-        // Check Local Storage
         const savedReg = localStorage.getItem("reval_reg");
         const savedMob = localStorage.getItem("reval_mob");
-        if (savedReg && savedMob) {
-            handleLogin(true); 
-        } else {
-            document.getElementById("loginSection").classList.remove("hidden");
-        }
+        if (savedReg && savedMob) { handleLogin(true); } else { document.getElementById("loginSection").classList.remove("hidden"); }
     } catch(e) { alert("Server Connection Failed"); }
 });
 
-/* --- LOGIN --- */
 async function handleLogin(isAuto = false) {
     let reg, mob;
-    if (isAuto) {
-        reg = localStorage.getItem("reval_reg");
-        mob = localStorage.getItem("reval_mob");
-    } else {
-        reg = document.getElementById("regNo").value.trim();
-        mob = document.getElementById("mobile").value.trim();
-    }
-
-    if (!reg || mob.length !== 4) {
-        if(!isAuto) alert("Please enter valid details");
-        return;
-    }
-
-    showLoading(isAuto ? "Restoring Session..." : "Verifying...");
-
+    if (isAuto) { reg = localStorage.getItem("reval_reg"); mob = localStorage.getItem("reval_mob"); } 
+    else { reg = document.getElementById("regNo").value.trim(); mob = document.getElementById("mobile").value.trim(); }
+    if (!reg || mob.length !== 4) { if(!isAuto) alert("Invalid details"); return; }
+    showLoading(isAuto ? "Restoring..." : "Verifying...");
     try {
         const resp = await fetch(`${SCRIPT_URL}?action=login&regNo=${reg}&mobile=${mob}`);
         const data = await resp.json();
-
         if (data.error) {
-            localStorage.removeItem("reval_reg");
-            localStorage.removeItem("reval_mob");
+            localStorage.removeItem("reval_reg"); localStorage.removeItem("reval_mob");
             if(!isAuto) document.getElementById("loginError").textContent = data.error;
         } else {
-            // Success
-            localStorage.setItem("reval_reg", reg);
-            localStorage.setItem("reval_mob", mob);
-            
+            localStorage.setItem("reval_reg", reg); localStorage.setItem("reval_mob", mob);
             currentStudent = data.student;
-            appliedList = data.applied.map(a => a.id);
-            
             renderDashboard(data.status, data.applied, data.payment);
-            
             document.getElementById("loginSection").classList.add("hidden");
             document.getElementById("dashboardSection").classList.remove("hidden");
         }
-    } catch(e) { 
-        if(!isAuto) document.getElementById("loginError").textContent = "Network Error";
-    } finally {
-        hideLoading();
-    }
+    } catch(e) { if(!isAuto) document.getElementById("loginError").textContent = "Network Error"; } finally { hideLoading(); }
 }
 
-/* --- DASHBOARD RENDERER --- */
+// --- MAIN DASHBOARD RENDERER ---
 function renderDashboard(status, applied, payment) {
     document.getElementById("studentName").textContent = currentStudent.name;
     document.getElementById("studentReg").textContent = currentStudent.regNo;
-
-    // Save simple list of subjects ["Maths", "Physics"]
+    
+    // Save state
     const appliedIds = applied.map(item => item.subject); 
     sessionStorage.setItem("reval_applied_list", JSON.stringify(appliedIds));
     appliedList = appliedIds; 
@@ -336,200 +188,113 @@ function renderDashboard(status, applied, payment) {
     const table = document.getElementById("viewTable");
     const viewHead = document.querySelector("#viewTable thead tr");
 
-    viewBody.innerHTML = "";
-    actions.innerHTML = "";
-    
-    // Update Header (Remove Component Column)
+    viewBody.innerHTML = ""; actions.innerHTML = "";
     viewHead.innerHTML = `<th>Subject</th><th style="text-align:center">Fee</th>`;
 
-    if (applied.length === 0) {
-        table.classList.add("hidden");
-        emptyMsg.classList.remove("hidden");
-    } else {
-        table.classList.remove("hidden");
-        emptyMsg.classList.add("hidden");
-        applied.forEach(item => {
-            viewBody.innerHTML += `
-                <tr>
-                    <td style="font-weight:500">${item.subject}</td>
-                    <td style="text-align:center">₹${FEE}</td>
-                </tr>`;
-        });
-    }
+    if (applied.length === 0) { table.classList.add("hidden"); emptyMsg.classList.remove("hidden"); } 
+    else { table.classList.remove("hidden"); emptyMsg.classList.add("hidden"); applied.forEach(item => { viewBody.innerHTML += `<tr><td style="font-weight:500">${item.subject}</td><td style="text-align:center">₹${FEE}</td></tr>`; }); }
 
-    // State Logic
+    // --- BUTTON HELPERS ---
+    // Pass existing payment details to pre-fill the form
+    const payRef = payment ? payment.ref : '';
+    const payDate = payment ? new Date(payment.date).toISOString().split('T')[0] : ''; // Format Date for input
+    const payAmt = applied.length * FEE;
+    
+    const btnPay = `<button onclick="openPaymentMode(${applied.length}, '${payRef}', '${payDate}')" class="btn btn-success">Update Payment (₹${payAmt})</button>`;
+    const btnEdit = `<button onclick="openEditMode()" class="btn btn-outline">Edit Subjects</button>`;
+
+    // --- STATE LOGIC ---
     if (status === "None") {
-        badge.className = "badge status-pending";
-        badge.textContent = "Not Applied";
-        desc.textContent = "Start by selecting papers below.";
+        badge.className = "badge status-pending"; badge.textContent = "Not Applied"; desc.textContent = "Start by selecting papers below.";
         actions.innerHTML = `<button onclick="openEditMode()" class="btn btn-primary">Apply for Revaluation</button>`;
     
     } else if (status === "Pending Payment") {
-        badge.className = "badge status-pending";
-        badge.textContent = "Pending Payment";
-        desc.textContent = "Review your selection and complete payment.";
+        badge.className = "badge status-pending"; badge.textContent = "Pending Payment"; desc.textContent = "Review your selection and complete payment.";
         actions.innerHTML = `
-            <button onclick="openPaymentMode(${applied.length})" class="btn btn-success">Add Payment details (₹${applied.length * FEE})</button>
+            <button onclick="openPaymentMode(${applied.length}, '${payRef}', '${payDate}')" class="btn btn-success">Add Payment Details (₹${payAmt})</button>
             <button onclick="openEditMode()" class="btn btn-outline">Edit Selection</button>
         `;
     
     } else if (status === "Submitted") {
-        badge.className = "badge status-submitted";
-        badge.textContent = "Under Review";
-        desc.textContent = "Application submitted. Waiting for admin verification.";
+        // *** CHANGE: SUBMITTED IS NOW EDITABLE ***
+        badge.className = "badge status-submitted"; badge.textContent = "Under Review"; desc.textContent = "Application submitted. You can still modify details.";
         
         let payInfo = "";
         if(payment) {
-            payInfo = `
-            <div style="background:#eff6ff; border:1px solid #dbeafe; padding:15px; border-radius:8px; margin-top:15px; text-align:left;">
-                <div style="font-weight:600; color:#1e40af; margin-bottom:5px;">Payment Info</div>
-                <div style="font-size:13px; color:#1e3a8a;">
-                    Ref: <b>${payment.ref}</b> &bull; Amount: <b>₹${payment.amount}</b>
-                </div>
+            payInfo = `<div style="background:#eff6ff; border:1px solid #dbeafe; padding:15px; border-radius:8px; margin-top:15px; text-align:left;">
+                <div style="font-weight:600; color:#1e40af; margin-bottom:5px;">Current Payment Info</div>
+                <div style="font-size:13px; color:#1e3a8a;">Ref: <b>${payment.ref}</b> &bull; Amount: <b>₹${payment.amount}</b></div>
             </div>`;
         }
-        actions.innerHTML = payInfo;
+        
+        actions.innerHTML = `
+            ${payInfo}
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                ${btnPay}
+                ${btnEdit}
+            </div>
+        `;
     
     } else if (status === "Verified") {
-        badge.className = "badge status-verified";
-        badge.textContent = "Verified";
-        desc.textContent = "Application and Payment successfully verified.";
-
-        let payInfo = "";
+        // *** VERIFIED IS LOCKED ***
+        badge.className = "badge status-verified"; badge.textContent = "Verified"; desc.textContent = "Application verified by Admin. No further changes allowed.";
         if(payment) {
-            payInfo = `
-            <div class="verified-box">
-                <div class="check-icon">✓</div>
-                <div>
-                    <div style="font-weight:bold; color:#14532d;">Payment Verified</div>
-                    <div style="font-size:13px; color:#166534;">
-                        Ref: ${payment.ref}<br>
-                        Paid: ₹${payment.amount}
-                    </div>
-                </div>
-            </div>`;
+            actions.innerHTML = `<div class="verified-box"><div class="check-icon">✓</div><div><div style="font-weight:bold; color:#14532d;">Payment Verified</div><div style="font-size:13px; color:#166534;">Ref: ${payment.ref}<br>Paid: ₹${payment.amount}</div></div></div>`;
         }
-        actions.innerHTML = payInfo;
     }
 }
 
-// 3. UPDATE OPEN EDIT MODE (Subject Selection)
 function openEditMode() {
-    document.getElementById("viewMode").classList.add("hidden");
-    document.getElementById("editMode").classList.remove("hidden");
-    
-    // Update Header
-    const thead = document.querySelector("#editMode table thead tr");
-    thead.innerHTML = `<th style="width:50px">Select</th><th>Subject</th>`;
-
-    const tbody = document.getElementById("editTableBody");
-    tbody.innerHTML = "";
-
-    const storedList = sessionStorage.getItem("reval_applied_list");
-    const currentAppliedList = storedList ? JSON.parse(storedList) : appliedList;
+    document.getElementById("viewMode").classList.add("hidden"); document.getElementById("editMode").classList.remove("hidden");
+    const thead = document.querySelector("#editMode table thead tr"); thead.innerHTML = `<th style="width:50px">Select</th><th>Subject</th><th>Marks (CE/OMR/Desc)</th>`;
+    const tbody = document.getElementById("editTableBody"); tbody.innerHTML = "";
+    const storedList = sessionStorage.getItem("reval_applied_list"); const currentAppliedList = storedList ? JSON.parse(storedList) : appliedList;
 
     currentStudent.subjects.forEach(sub => {
-        const cleanSub = sub.name.trim();
-        const isPreSelected = currentAppliedList.includes(cleanSub);
+        const cleanSub = sub.name.trim(); const isPreSelected = currentAppliedList.includes(cleanSub);
         const checkAttr = isPreSelected ? "checked" : "";
         const savedLabel = isPreSelected ? '<span style="font-size:10px; color:#166534; font-weight:bold;">(Saved)</span>' : '';
-
-        // Helper to show marks safely
         const showMark = (m) => m ? m.mark : '-';
-        const markStr = `<span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-right:5px; font-size:12px;">CE: ${showMark(sub.CE)}</span>
-                         <span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-right:5px; font-size:12px;">OMR: ${showMark(sub.OMR)}</span>
-                         <span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:12px;">Desc: ${showMark(sub.DESC)}</span>`;
+        const markStr = `<span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-right:5px; font-size:12px;">CE: ${showMark(sub.CE)}</span><span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-right:5px; font-size:12px;">OMR: ${showMark(sub.OMR)}</span><span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:12px;">Desc: ${showMark(sub.DESC)}</span>`;
 
-        tbody.innerHTML += `
-            <tr onclick="toggleRow(this)" class="interactive-row">
-                <td style="text-align:center">
-                    <input type="checkbox" onchange="calcDraft()" data-sub="${cleanSub}" ${checkAttr} style="width:18px; height:18px; cursor:pointer;">
-                </td>
-                <td>
-                    <div style="font-weight:600;">${sub.name}</div>
-                    <div> ${markStr}</div>
-                    ${savedLabel}
-                </td>
-            </tr>`;
+        tbody.innerHTML += `<tr onclick="toggleRow(this)" class="interactive-row"><td style="text-align:center"><input type="checkbox" onchange="calcDraft()" data-sub="${cleanSub}" ${checkAttr} style="width:18px; height:18px; cursor:pointer;"></td><td><div style="font-weight:600;">${sub.name}</div>${savedLabel}</td><td>${markStr}</td></tr>`;
     });
     calcDraft();
 }
-
-// Helper to toggle checkbox when clicking row
-function toggleRow(row) {
-    if(event.target.type === 'checkbox') return;
-    const cb = row.querySelector('input[type="checkbox"]');
-    cb.checked = !cb.checked;
-    calcDraft();
-}
-
-// 4. UPDATE SAVE DRAFT (Send Subject Only)
+function toggleRow(row) { if(event.target.type === 'checkbox') return; const cb = row.querySelector('input[type="checkbox"]'); cb.checked = !cb.checked; calcDraft(); }
+function calcDraft() { const count = document.querySelectorAll('#editTableBody input:checked').length; document.getElementById("calcTotal").textContent = `₹${count * FEE}`; }
+function cancelEdit() { document.getElementById("editMode").classList.add("hidden"); document.getElementById("viewMode").classList.remove("hidden"); }
 async function saveDraft() {
     const checks = document.querySelectorAll('#editTableBody input:checked');
-    if(checks.length === 0) return alert("Please select at least one subject.");
-    
-    const selections = [];
-    checks.forEach(c => selections.push({ subject: c.dataset.sub })); // Only Subject needed
-
-    showLoading("Saving Selection...");
-    
-    try {
-        await fetch(SCRIPT_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "save_draft", regNo: currentStudent.regNo, name: currentStudent.name, selections: selections })
-        });
-        await handleLogin(true); 
-        cancelEdit();
-    } catch(e) { alert("Error saving"); }
-    finally { hideLoading(); }
+    if(checks.length === 0) return alert("Select at least one subject.");
+    const selections = []; checks.forEach(c => selections.push({ subject: c.dataset.sub }));
+    showLoading("Saving...");
+    try { await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({ action: "save_draft", regNo: currentStudent.regNo, name: currentStudent.name, selections: selections }) }); await handleLogin(true); cancelEdit(); } catch(e) { alert("Error saving"); } finally { hideLoading(); }
 }
 
-function calcDraft() {
-    const count = document.querySelectorAll('#editTableBody input:checked').length;
-    document.getElementById("calcTotal").textContent = `₹${count * FEE}`;
-}
-
-function cancelEdit() {
-    document.getElementById("editMode").classList.add("hidden");
-    document.getElementById("viewMode").classList.remove("hidden");
-}
-
-/* --- PAYMENT ACTIONS --- */
-function openPaymentMode(count) {
+// --- UPDATED PAYMENT FUNCTIONS ---
+function openPaymentMode(count, currentRef = '', currentDate = '') {
     document.getElementById("viewMode").classList.add("hidden");
     document.getElementById("paymentMode").classList.remove("hidden");
     document.getElementById("payAmountDisplay").textContent = `₹${count * FEE}`;
+    
+    // Pre-fill existing data if user is editing
+    if(currentRef) document.getElementById("payRef").value = currentRef;
+    if(currentDate) document.getElementById("payDate").value = currentDate;
 }
 
-function cancelPayment() {
-    document.getElementById("paymentMode").classList.add("hidden");
-    document.getElementById("viewMode").classList.remove("hidden");
-}
+function cancelPayment() { document.getElementById("paymentMode").classList.add("hidden"); document.getElementById("viewMode").classList.remove("hidden"); }
 
 async function submitPayment() {
     const ref = document.getElementById("payRef").value.trim();
     const date = document.getElementById("payDate").value.trim();
     const amt = document.getElementById("payAmountDisplay").textContent.replace("₹","");
-    if(!ref) return alert("Please enter Transaction Reference Number");
-
-    showLoading("Submitting Payment...");
-    
-    try {
-        await fetch(SCRIPT_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "submit_payment", regNo: currentStudent.regNo, name: currentStudent.name, ref: ref,paymentDate: date,amount: amt })
-        });
-        await handleLogin(true); // Refresh
-        cancelPayment();
-    } catch(e) { alert("Error submitting payment"); }
-    finally { hideLoading(); }
+    if(!ref) return alert("Enter Reference Number");
+    showLoading("Submitting...");
+    try { await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({ action: "submit_payment", regNo: currentStudent.regNo, name: currentStudent.name, ref: ref, paymentDate: date, amount: amt }) }); await handleLogin(true); cancelPayment(); } catch(e) { alert("Error"); } finally { hideLoading(); }
 }
 
-function handleLogout() {
-    localStorage.removeItem("reval_reg");
-    localStorage.removeItem("reval_mob");
-    location.reload();
-}
+function handleLogout() { localStorage.removeItem("reval_reg"); localStorage.removeItem("reval_mob"); location.reload(); }
 </script>
 </body>
 </html>
