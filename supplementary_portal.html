@@ -110,7 +110,7 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO96MIqHL8_r34UVJUq75aZvxsshUewKQUNnn33QSljp2LgJOjzecZixuhN_OfSn4Mig/exec";
     let currentStudent = null;
     let appliedList = []; 
-    const FEE_PER_SUBJECT = 200; 
+    const FEE_PER_SUBJECT = 300; 
 
     function showLoading() { document.getElementById("globalLoader").classList.remove("hidden"); }
     function hideLoading() { document.getElementById("globalLoader").classList.add("hidden"); }
@@ -197,7 +197,7 @@ function showSelectionMode() {
             <tr onclick="toggleRow(this)" class="interactive-row" style="${isArrear ? 'background:#fff5f5' : ''}">
                 <td style="text-align:center"><input type="checkbox" class="sub-checkbox" data-sub="${sub.name}" ${checkAttr} onchange="updateFee()"></td>
                 <td><b>${sub.name}</b><br>${isArrear ? '<small style="color:red">Arrear</small>' : ''}</td>
-                <td>₹200</td>
+                <td>₹300</td>
             </tr>`;
     });
     updateFee();
@@ -244,7 +244,7 @@ function showSelectionMode() {
                     <div style="font-weight:600;">${sub.name}</div>
                     ${isArrear ? '<span class="badge status-failed">Arrear</span>' : ''}
                 </td>
-                <td style="text-align:center">₹200</td>
+                <td style="text-align:center">₹300</td>
             </tr>`;
     });
     updateFee();
