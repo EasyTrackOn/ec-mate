@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ASMI EC MATE - Professional Result Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+    :root {
+        --primary: #1e3a8a;
+        --bg: #f1f5f9;
+        --surface: #ffffff;
+        --text: #1e293b;
+        --border: #cbd5e1;
+        --success: #15803d;
+        --danger: #b91c1c;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+    .container { max-width: 850px; margin: auto; }
+
+    /* --- LOADING OVERLAY --- */
+    #loadingOverlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(4px);
+        z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .spinner {
+        width: 45px; height: 45px; border: 4px solid #e2e8f0; border-top: 4px solid var(--primary);
+        border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* --- SEARCH PANEL --- */
+    .search-card {
+        background: var(--surface); padding: 30px; border-radius: 16px; 
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 30px; text-align: center;
+    }
+    .input-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+    input, select { padding: 12px; border: 1px solid #94a3b8; border-radius: 8px; min-width: 220px; outline-color: var(--primary); }
+    .btn-search { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .btn-search:hover { opacity: 0.9; }
+
+    /* --- RESULT SECTION --- */
+    #resultSection { display: none; animation: fadeIn 0.5s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .result-card { background: white; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 25px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    
+    /* Institutional Emblem Header */
+    .emblem-header {
+        display: flex; align-items: center; justify-content: center; gap: 20px;
+        padding: 25px; border-bottom: 2px solid var(--primary); background: #fcfcfc;
+    }
+    .emblem-header img { width: 80px; height: auto; }
+    .inst-details { text-align: center; }
+    .inst-details h1 { margin: 0; font-family: 'Merriweather', serif; font-size: 24px; color: var(--primary); text-transform: uppercase; }
+    .inst-details p { margin: 4px 0; font-size: 13px; color: var(--text-muted); font-weight: 500; }
+
+    .card-header { background: #f8fafc; padding: 12px 20px; font-weight: 700; color: var(--primary); border-bottom: 1px solid var(--border); text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+    
+    .student-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; padding: 20px; background: #fff; }
+    .label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+    .val { font-weight: 700; margin-top: 2px; color: #0f172a; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; background: #f8fafc; padding: 12px 20px; font-size: 11px; color: #475569; border-bottom: 2px solid var(--border); text-transform: uppercase; }
+    td { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 14px; }
+
+    .badge { padding: 5px 12px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+    .pass { background: #dcfce7; color: var(--success); border: 1px solid #86efac; }
+    .fail { background: #fee2e2; color: var(--danger); border: 1px solid #fca5a5; }
+
+    .actions { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; }
+    .btn-action { padding: 8px 16px; background: white; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s; }
+    .btn-action:hover { border-color: var(--primary); color: var(--primary); }
+
+    .disclaimer { padding: 20px; text-align: center; font-size: 11px; color: #94a3b8; font-style: italic; }
+
+    @media print { .search-card, .actions { display: none; } body { padding: 0; background: white; } .result-card { border: 2px solid #000; box-shadow: none; } }
+    .practical-icon-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 5px;
+    padding: 2px;
+    background: #ffffff;
+}
+
+.practical-item {
+    text-align: center;
+    padding: 2px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #f8fafc;
+    transition: transform 0.2s;
+}
+
+.practical-item:hover { transform: translateY(-3px); border-color: var(--primary); }
+
+.item-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.item-name { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+.item-mark { font-size: 18px; font-weight: 800; color: var(--primary); display: block; margin-top: 5px; }
+
+.practical-summary-row {
+    padding: 15px 20px;
+    border-top: 1px dashed var(--border);
+    background: #fff;
+}
+
+</style>
+</head>
+<body>
+
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div style="font-weight: 600; color: var(--primary);">GENERATING REPORT...</div>
+</div>
+
+<div class="container">
+    <div class="search-card">
+        <h2 style="margin:0; color:var(--primary); letter-spacing: -1px;">ASMI EC MATE</h2>
+        <p style="margin:5px 0 20px; font-size: 14px; color: #64748b;">Examination Results Portal</p>
+        <div class="input-row">
+            <select id="institution"><option value="">Loading Institutions...</option></select>
+            <input id="regNo" type="text" placeholder="Register Number">
+            <button class="btn-search" onclick="searchResult()">Search Result</button>
+        </div>
+    </div>
+
+    <div id="resultSection">
+        <div class="actions">
+            <button class="btn-action" onclick="window.print()">Print Official PDF</button>
+            <button class="btn-action" onclick="downloadPNG()">Download Transcript (PNG)</button>
+        </div>
+
+        <div id="printArea">
+            <!-- EMBLEM & INSTITUTION HEADER -->
+            <div class="result-card">
+                <div class="emblem-header">
+                    <img src="ECMATE.png" alt="Logo" id="instLogo" onerror="this.src='https://via.placeholder.com/80?text=LOGO'">
+                    <div class="inst-details">
+                        <h1 id="headerInstName">Institution Name</h1>
+                        <p>Affiliated to ASMI EC MATE Board of Examinations</p>
+                        <p>Academic Year: 2025-2026 | Session: Semester II</p>
+                    </div>
+                </div>
+                
+                <div class="card-header">Student Transcript Details</div>
+                <div class="student-grid">
+                    <div><div class="label">Candidate Name</div><div class="val" id="name">--</div></div>
+                    <div><div class="label">Register No</div><div class="val" id="reg" style="font-family: monospace;">--</div></div>
+                    <div><div class="label">Date of Issue</div><div class="val" id="dateIssue">--</div></div>
+                    <div><div class="label">Overall Sem-1</div><div class="val" id="overallSem1">--</div></div>
+                    <div><div class="label">Overall Result</div><div id="statusBadge">--</div></div>
+                </div>
+            </div>
+
+            <!-- SEMESTER 2 CONTAINER -->
+            <div class="result-card">
+                <div class="card-header">Main Examination Performance (Sem 2)</div>
+                <table>
+                    <thead>
+                        <tr><th>Subject Name</th><th>PE</th><th>TE</th><th>Total</th><th>Result</th></tr>
+                    </thead>
+                    <tbody id="sem2Body"></tbody>
+                </table>
+            </div>
+
+            <!-- SEMESTER 1 CONTAINER -->
+            <!-- <div class="result-card">
+                <div class="card-header">Previous Record (Semester 1)</div>
+                <table>
+                    <thead><tr><th>Subject Name</th><th>Marks Obtained</th></tr></thead>
+                    <tbody id="sem1Body"></tbody>
+                </table>
+            </div> -->
+
+            <!-- PRACTICAL CONTAINER -->
+            <!-- NEW ICON-BASED PRACTICAL CONTAINER -->
+<div class="result-card">
+    <div class="card-header">Internal & Practical Assessment</div>
+    
+    <!-- Grid for Icon Look -->
+    <div id="practicalIcons" class="practical-icon-container">
+        <!-- Icons will be injected here -->
+    </div>
+
+    <!-- Comma-wise Summary Row -->
+    <div class="practical-summary-row">
+        <div class="label">Practical Subjects Completed:</div>
+        <div id="practicalSummary" class="val">--</div>
+    </div>
+</div>
+
+            <div class="disclaimer">
+                This is a provisional computer-generated statement of marks. The original certificates will be issued by the respective institutions after final verification.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO96MIqHL8_r34UVJUq75aZvxsshUewKQUNnn33QSljp2LgJOjzecZixuhN_OfSn4Mig/exec";
+const MIN_MARKS = { PE: 15, TE: 25 };
+
+function toggleLoading(show) { document.getElementById("loadingOverlay").style.display = show ? "flex" : "none"; }
+
+async function loadInstitutions() {
+    try {
+        const response = await fetch(`${SCRIPT_URL}?action=get_institutions`, { redirect: "follow" });
+        const data = await response.json();
+        const select = document.getElementById("institution");
+        select.innerHTML = '<option value="">Select Institution</option>';
+        data.institutions.forEach(i => select.innerHTML += `<option value="${i.id}">${i.instName}</option>`);
+    } catch (e) { console.error("Error loading institutions"); }
+}
+
+async function searchResult() {
+    const instId = document.getElementById("institution").value;
+    const regNo = document.getElementById("regNo").value.trim();
+    if (!instId || !regNo) return alert("Please enter all required fields.");
+
+    toggleLoading(true);
+    try {
+        const response = await fetch(`${SCRIPT_URL}?regNo=${encodeURIComponent(regNo)}&institution=${encodeURIComponent(instId)}`, { redirect: "follow" });
+        const data = await response.json();
+        if (data) renderResult(data);
+        else alert("Result not found for the provided details.");
+    } catch (e) { alert("Server Connection Error"); }
+    finally { toggleLoading(false); }
+}
+
+function renderResult(data) {
+    console.log("Fetched Result Data:", data);
+    const instName = document.getElementById("institution").selectedOptions[0].text;
+    document.getElementById("headerInstName").textContent = instName;
+    document.getElementById("name").textContent = data.name;
+    document.getElementById("reg").textContent = data.registerNo;
+    document.getElementById("dateIssue").textContent = new Date().toLocaleDateString('en-GB');
+
+    let s2 = "", s1 = "", pr = "", passCount = 0;
+    
+    // Sem 2 Logic
+    data.subjects.forEach(s => {
+        const pe = Number(s.pe || 0), te = Number(s.te || 0);
+        const pass = (pe >= MIN_MARKS.PE && te >= MIN_MARKS.TE);
+        if (!pass) passCount++;
+        
+        s2 += `<tr>
+            <td><strong>${s.subject}</strong></td>
+            <td style="${pe < MIN_MARKS.PE ? 'color:var(--danger); font-weight:bold' : ''}">${s.pe || '0'}</td>
+            <td style="${te < MIN_MARKS.TE ? 'color:var(--danger); font-weight:bold' : ''}">${s.te || '0'}</td>
+            <td><strong>${pe + te}</strong></td>
+            <td><span class="badge ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'FAIL'}</span></td>
+        </tr>`;
+    });
+
+    if(data.sem1) data.sem1.forEach(i => s1 += `${i.mark}/500`);
+    if(data.practical) data.practical.forEach(i => pr += `<tr><td>${i.subject}</td><td><strong>${i.mark}</strong></td></tr>`);
+
+    document.getElementById("sem2Body").innerHTML = s2;
+    document.getElementById("overallSem1").textContent = s1;//data.registerNo;
+    let practicalHTML = "";
+let summaryList = [];
+let totalPracticalSum = 0; // Initialize the sum counter
+
+if (data.practical && data.practical.length > 0) {
+    data.practical.forEach(item => {
+        // 1. Calculate the running total
+        // Use Number() to ensure addition instead of string joining
+        totalPracticalSum += Number(item.mark || 0); 
+
+        // 2. Add to Icon Grid[cite: 1]
+        practicalHTML += `
+            <div class="practical-item">
+                <span class="item-name">${item.subject}</span>
+                <span class="item-mark">${item.mark}</span>
+            </div>`;
+        
+        // 3. Add to Summary List[cite: 1]
+        summaryList.push(item.subject);
+    });
+    
+    // Update the displays[cite: 1]
+    document.getElementById("practicalIcons").innerHTML = practicalHTML;
+    // ${summaryList.join(", ")} 
+    // 4. Show the itemized list followed by the bold Total[cite: 1]
+    document.getElementById("practicalSummary").innerHTML = `
+        
+        <div style="margin-top: 8px; font-weight: bold; color: #1e3a8a; border-top: 1px solid #eee; pt: 5px;">
+            Total Practical Marks: ${totalPracticalSum}
+        </div>`;
+} else {
+    document.getElementById("practicalIcons").innerHTML = `<div style="padding:20px; color:#94a3b8; grid-column: 1/-1;">No Data Found</div>`;
+    document.getElementById("practicalSummary").textContent = "N/A";
+}
+
+    //document.getElementById("sem1Body").innerHTML = s1 || "<tr><td colspan='2' style='color:#94a3b8'>No Semester 1 Data Found</td></tr>";
+    //document.getElementById("practicalBody").innerHTML = pr || "<tr><td colspan='2' style='color:#94a3b8'>No Internal Assessment Data Found</td></tr>";
+
+    const badge = document.getElementById("statusBadge");
+    const isOverallPass = passCount === 0;
+    badge.innerHTML = `<span class="badge ${isOverallPass ? 'pass' : 'fail'}">${isOverallPass ? 'PASSED' : 'FAILED'}</span>`;
+
+    document.getElementById("resultSection").style.display = "block";
+    document.getElementById("resultSection").scrollIntoView({ behavior: 'smooth' });
+}
+
+function downloadPNG() {
+    toggleLoading(true);
+    html2canvas(document.getElementById("printArea"), { scale: 2.5 }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = `ASMI_Result_${document.getElementById("reg").textContent}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        toggleLoading(false);
+    });
+}
+
+window.onload = loadInstitutions;
+</script>
+</body>
+</html>
