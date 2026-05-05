@@ -527,10 +527,13 @@ function populateDropdown(institutions) {
 const MIN_MARKS = {
     CE: 15,
     OMR: 25,
-    DESC: 10
+    DESC: 10,
+    PE:10,
+    TE:30
 };
 
 function renderCertificatesem2(data) {
+    console.log("Rendering result for:", data);
     const insttext = document.getElementById("institution").selectedOptions[0].text;
 document.getElementById("semname").textContent = "Semester-2 (2025-26)";
     document.getElementById("name").textContent = data.name;
@@ -542,17 +545,13 @@ document.getElementById("semname").textContent = "Semester-2 (2025-26)";
         <!-- <th style="max-width: 30px;">Sl</th> -->
         <th rowspan="2">Subject</th>
         
-        <th style="width: 60px; font-size: 11px;">PE<br><small>(Max 30)</small></th>
-        <th style="width: 60px; font-size: 11px;">TE<br><small>(Max 70)</small></th>
+        <th style="width: 60px; font-size: 11px;">PE<br></th>
+        <th style="width: 60px; font-size: 11px;">TE<br></th>
         
         <th rowspan="2" style="width: 60px;">Total<br><small>(Max 100)</small></th>
         <th rowspan="2" style="width: 80px;">Status</th>
     </tr>
-
-    <tr>
-        <th style="font-size: 10px; color:#d32f2f; background-color: #f9f9f9;">Minimum for Pass<br>(15)</th>
-        <th style="font-size: 10px; color:#d32f2f; background-color: #f9f9f9;">Minimum for Pass<br>(25)</th>
-         </tr>`;             
+        `;             
     let tbody = "";
     let overallPass = true;
 
@@ -569,6 +568,14 @@ document.getElementById("semname").textContent = "Semester-2 (2025-26)";
 
         // 2. Check Pass Logic per Subject
         let isSubjectPass = true;
+        if((s.subject + "_TE").includes(data.status)) {
+            isSubjectPass = false;
+        }
+        if((s.subject + "_CE").includes(data.status)) {
+            isSubjectPass = false;
+        }
+
+
         if (valCE < MIN_MARKS.CE) isSubjectPass = false;
         if (valOMR < MIN_MARKS.OMR) isSubjectPass = false;
         
@@ -576,9 +583,14 @@ document.getElementById("semname").textContent = "Semester-2 (2025-26)";
         if (!isSubjectPass) overallPass = false;
 
         // 3. Styling for Failed Marks (Red text)
-        const styleCE = (rawCE === 'AB' || valCE < MIN_MARKS.CE) ? 'color:#d32f2f; font-weight:bold;' : '';
-        const styleOMR = (rawOMR === 'AB' || valOMR < MIN_MARKS.OMR) ? 'color:#d32f2f; font-weight:bold;' : '';
-        const statusColor = isSubjectPass ? "status-pass" : "status-fail"; //'#000' : '#d32f2f';
+       // Logic for CE (Continuous Evaluation)
+const isRedCE = (rawCE === 'AB' || valCE < MIN_MARKS.CE || data.status.includes(s.subject + "_CE"));
+const styleCE = isRedCE ? 'color:#d32f2f; font-weight:bold;' : '';
+
+// Logic for OMR (Theory/Terminal Exam)
+const isRedOMR = (rawOMR === 'AB' || valOMR < MIN_MARKS.OMR || data.status.includes(s.subject + "_TE"));
+const styleOMR = isRedOMR ? 'color:#d32f2f; font-weight:bold;' : '';
+const statusColor = isSubjectPass ? "status-pass" : "status-fail"; //'#000' : '#d32f2f';
         //const statusClass = isOverallPass ? "status-pass" : "status-fail";
         ////   <!--- <td style="color:#64748b; display:none;" >${i + 1}</td> -->
             
@@ -619,6 +631,7 @@ document.getElementById("semname").textContent = "Semester-2 (2025-26)";
 
 
 function renderCertificatesem1(data) {
+    console.log("Rendering Semester 1 with data:", data);
     const insttext = document.getElementById("institution").selectedOptions[0].text;
     document.getElementById("semname").textContent = "Semester-1 (2025-26)";
     document.getElementById("name").textContent = data.name;
