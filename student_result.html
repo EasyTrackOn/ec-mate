@@ -568,12 +568,17 @@ document.getElementById("semname").textContent = "Semester-2 (2025-26)";
 
         // 2. Check Pass Logic per Subject
         let isSubjectPass = true;
-        if((s.subject + "_TE").includes(data.status)) {
-            isSubjectPass = false;
-        }
-        if((s.subject + "_CE").includes(data.status)) {
-            isSubjectPass = false;
-        }
+
+        // CORRECT WAY: Check if the array includes the string
+if (data.status.includes(s.subject.trim() + "_TE")) {
+    console.log("Subject failed due to TE status:", s.subject);
+    isSubjectPass = false;
+}
+
+if (data.status.includes(s.subject.trim() + "_PE")) {
+    console.log("Subject failed due to PE status:", s.subject);
+    isSubjectPass = false;
+}
 
 
         if (valCE < MIN_MARKS.CE) isSubjectPass = false;
@@ -584,11 +589,11 @@ document.getElementById("semname").textContent = "Semester-2 (2025-26)";
 
         // 3. Styling for Failed Marks (Red text)
        // Logic for CE (Continuous Evaluation)
-const isRedCE = (rawCE === 'AB' || valCE < MIN_MARKS.CE || (s.subject + "_CE").includes(data.status));
+const isRedCE = (rawCE === 'AB' || valCE < MIN_MARKS.CE ||data.status.includes(s.subject.trim() + "_CE"));
 const styleCE = isRedCE ? 'color:#d32f2f; font-weight:bold;' : '';
 
 // Logic for OMR (Theory/Terminal Exam)
-const isRedOMR = (rawOMR === 'AB' || valOMR < MIN_MARKS.OMR || (s.subject + "_TE").includes(data.status));
+const isRedOMR = (rawOMR === 'AB' || valOMR < MIN_MARKS.OMR || data.status.includes(s.subject.trim() + "_TE"));
 const styleOMR = isRedOMR ? 'color:#d32f2f; font-weight:bold;' : '';
 const statusColor = isSubjectPass ? "status-pass" : "status-fail"; //'#000' : '#d32f2f';
         //const statusClass = isOverallPass ? "status-pass" : "status-fail";
