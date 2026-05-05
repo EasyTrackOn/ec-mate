@@ -584,11 +584,11 @@ document.getElementById("semname").textContent = "Semester-2 (2025-26)";
 
         // 3. Styling for Failed Marks (Red text)
        // Logic for CE (Continuous Evaluation)
-const isRedCE = (rawCE === 'AB' || valCE < MIN_MARKS.CE || data.status.includes(s.subject + "_CE"));
+const isRedCE = (rawCE === 'AB' || valCE < MIN_MARKS.CE || (s.subject + "_CE").includes(data.status));
 const styleCE = isRedCE ? 'color:#d32f2f; font-weight:bold;' : '';
 
 // Logic for OMR (Theory/Terminal Exam)
-const isRedOMR = (rawOMR === 'AB' || valOMR < MIN_MARKS.OMR || data.status.includes(s.subject + "_TE"));
+const isRedOMR = (rawOMR === 'AB' || valOMR < MIN_MARKS.OMR || (s.subject + "_TE").includes(data.status));
 const styleOMR = isRedOMR ? 'color:#d32f2f; font-weight:bold;' : '';
 const statusColor = isSubjectPass ? "status-pass" : "status-fail"; //'#000' : '#d32f2f';
         //const statusClass = isOverallPass ? "status-pass" : "status-fail";
