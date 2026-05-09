@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +30,6 @@
         text-transform: uppercase; 
         text-align: center;
         background: none !important;
-        color: inherit !important;
         border: none !important;
     }
     /* Hide everything except the marksheet */
@@ -70,7 +68,7 @@
     /* Page settings */
     @page {
         size: A4;
-        margin: 10mm;
+        margin: 8mm;
     }
 }
     :root {
@@ -130,6 +128,7 @@ table th, table td {
     border: 1px solid #000; 
     padding: 8px 4px;
     font-size: 11px;
+    font-weight: bold;
 }
 
 /* Header Specific Styles */
@@ -300,7 +299,7 @@ async function searchResult() {
     finally { toggleLoading(false); }
 }
 
-//const data = {"name":"AMRUTHA DEVI A","institution":"EC-1","registerNo":"4001","sem1":{"subjects":[{"subject":"Child Development & Psychology","category":"SEM1","types":["CE","TE"],"details":{"CE":{"value":"0","max":"30","min":"15"},"TE":{"value":"49","max":"70","min":"35"}}},{"subject":"Perspective of Teaching Child","category":"SEM1","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"43","max":"70","min":"35"}}},{"subject":"Child Health & Hygiene","category":"SEM1","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"56","max":"70","min":"35"}}},{"subject":"Pedagogy of Montessori Education","category":"SEM1","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"57","max":"70","min":"35"}}},{"subject":"Language & Communications","category":"SEM1","types":["CE","TE"],"details":{"CE":{"value":"29","max":"30","min":"15"},"TE":{"value":"53","max":"70","min":"35"}}}]},"sem2":{"subjects":[{"subject":"Child Development & Psychology","category":"SEM2","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"48","max":"70","min":"35"}}},{"subject":"Perspective of Teaching Child","category":"SEM2","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"64","max":"70","min":"35"}}},{"subject":" \n SCHOOL ORGANIZATION","category":"SEM2","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"53","max":"70","min":"35"}}},{"subject":"Pedagogy of Montessori Education","category":"SEM2","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"55","max":"70","min":"35"}}},{"subject":"\n Language & Communications","category":"SEM2","types":["CE","TE"],"details":{"CE":{"value":"29","max":"30","min":"15"},"TE":{"value":"58","max":"70","min":"35"}}},{"subject":"Practice ans assignments","category":"SEM2","types":["PRACTICAL"],"details":{"PRACTICAL":{"value":"171","max":"200","min":"100"}}},{"subject":"Internship 2nd sem","category":"PRACTI","types":["PRAC"],"details":{"PRAC":{"value":"86","max":"100","min":"50"}}},{"subject":"Workshop on Digi Pedagogy","category":"PRACTI","types":["ICAL"],"details":{"ICAL":{"value":"17","max":"20","min":"10"}}},{"subject":"Art & craft workshop","category":"PRACTI","types":["PAL"],"details":{"PAL":{"value":"17","max":"20","min":"10"}}},{"subject":"Health & Phy.Edn","category":"PRACT","types":["PRL"],"details":{"PRL":{"value":"17","max":"20","min":"10"}}},{"subject":"Community Living Camp","category":"PRACT","types":["PCAL"],"details":{"PCAL":{"value":"17","max":"20","min":"10"}}},{"subject":"Field visit","category":"PRAC","types":["PRCAL"],"details":{"PRCAL":{"value":"17","max":"20","min":"10"}}},{"subject":"SEM1 PRACTL","category":"SEM2","types":["PRACTICAL"],"details":{"PRACTICAL":{"value":"144","max":"150","min":"75"}}}]},"practical":{"subjects":[{"subject":"Practical Examination& Viva Voice","category":"PRACTICAL","types":["PRACTICAL"],"details":{"PRACTICAL":{"value":"43","max":"50","min":"25"}}}]},"status":[]};
+const data = {"name":"AMRUTHA DEVI A","institution":"EC-1","registerNo":"4001","sem1":{"subjects":[{"subject":"Child Development & Psychology","category":"SEM1","types":["CE","TE"],"details":{"CE":{"value":"0","max":"30","min":"15"},"TE":{"value":"49","max":"70","min":"35"}}},{"subject":"Perspective of Teaching Child","category":"SEM1","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"43","max":"70","min":"35"}}},{"subject":"Child Health & Hygiene","category":"SEM1","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"56","max":"70","min":"35"}}},{"subject":"Pedagogy of Montessori Education","category":"SEM1","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"57","max":"70","min":"35"}}},{"subject":"Language & Communications","category":"SEM1","types":["CE","TE"],"details":{"CE":{"value":"29","max":"30","min":"15"},"TE":{"value":"53","max":"70","min":"35"}}}]},"sem2":{"subjects":[{"subject":"Child Development & Psychology","category":"SEM2","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"48","max":"70","min":"35"}}},{"subject":"Perspective of Teaching Child","category":"SEM2","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"64","max":"70","min":"35"}}},{"subject":" \n SCHOOL ORGANIZATION","category":"SEM2","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"53","max":"70","min":"35"}}},{"subject":"Pedagogy of Montessori Education","category":"SEM2","types":["CE","TE"],"details":{"CE":{"value":"30","max":"30","min":"15"},"TE":{"value":"55","max":"70","min":"35"}}},{"subject":"\n Language & Communications","category":"SEM2","types":["CE","TE"],"details":{"CE":{"value":"29","max":"30","min":"15"},"TE":{"value":"58","max":"70","min":"35"}}},{"subject":"Practice ans assignments","category":"SEM2","types":["PRACTICAL"],"details":{"PRACTICAL":{"value":"171","max":"200","min":"100"}}},{"subject":"Internship 2nd sem","category":"PRACTI","types":["PRAC"],"details":{"PRAC":{"value":"86","max":"100","min":"50"}}},{"subject":"Workshop on Digi Pedagogy","category":"PRACTI","types":["ICAL"],"details":{"ICAL":{"value":"17","max":"20","min":"10"}}},{"subject":"Art & craft workshop","category":"PRACTI","types":["PAL"],"details":{"PAL":{"value":"17","max":"20","min":"10"}}},{"subject":"Health & Phy.Edn","category":"PRACT","types":["PRL"],"details":{"PRL":{"value":"17","max":"20","min":"10"}}},{"subject":"Community Living Camp","category":"PRACT","types":["PCAL"],"details":{"PCAL":{"value":"17","max":"20","min":"10"}}},{"subject":"Field visit","category":"PRAC","types":["PRCAL"],"details":{"PRCAL":{"value":"17","max":"20","min":"10"}}},{"subject":"SEM1 PRACTL","category":"SEM2","types":["PRACTICAL"],"details":{"PRACTICAL":{"value":"144","max":"150","min":"75"}}}]},"practical":{"subjects":[{"subject":"Practical Examination& Viva Voice","category":"PRACTICAL","types":["PRACTICAL"],"details":{"PRACTICAL":{"value":"43","max":"50","min":"25"}}}]},"status":[]};
 function renderResult(data) {
     const resultContainer = document.getElementById("resultSection");
     
@@ -421,7 +420,7 @@ const generateTable = (title, subjectList) => {
     const getSum = (list) => {
         return (list || []).reduce((acc, s) => {
             let subTotal = 0;
-            Object.values(s.details).forEach(d => subTotal += Number(d.value === "Ab" ? 0 : d.value || 0));
+            Object.values(s.details).forEach(d => subTotal += Number(d.value === "Ab" ? 0 : d.value || 0)||0);
             return acc + subTotal;
         }, 0);
     };
@@ -480,11 +479,11 @@ const generateTable = (title, subjectList) => {
             <table class="marks-table summary-table center">
                 <tr>
                     <th>SLNO</th>
-                    <th>Semester</th>
+                    <th style="min-width: 200px;">Semester</th>
                     <th>Total Marks Obtained</th>
                     <th>Total Maximum Marks</th>
                 </tr>
-                <tr class="center"><td>1</td><td>First Semester</td><td><strong>${s1Total}</strong></td><td>500</td></tr>
+                <tr class="center"><td>1</td><td >First Semester</td><td><strong>${s1Total}</strong></td><td>500</td></tr>
                 <tr class="center"><td>2</td><td>Second Semester</td><td><strong>${s2Total}</strong></td><td>500</td></tr>
                 <tr class="center"><td>3</td><td>Practical Courses</td><td><strong>${prTotal}</strong></td><td>400</td></tr>
                 <tr style="background:#f1f5f9; font-weight:bold;">
@@ -493,7 +492,7 @@ const generateTable = (title, subjectList) => {
             </table>
 
             <div style="margin-top:40px; display:flex; justify-content: space-between; font-size:12px;">
-                <div>Date of Publication: 26-04-2025<br>Place: Malappuram</div>
+                <div>Date of Publication: 07-05-2026<br>Place: Chelari</div>
                 <div style="text-align:center;"><br><br><strong>Administrative Director</strong></div>
             </div>
         </div>
@@ -509,7 +508,7 @@ const generateTable = (title, subjectList) => {
     resultContainer.scrollIntoView({ behavior: 'smooth' });
 }
 
-//renderResult(data);
+renderResult(data);
 
 function renderResultold(data) {
     console.log("Fetched Result Data:", data);
