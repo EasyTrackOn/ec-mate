@@ -372,7 +372,7 @@ const generateTable = (title, subjectList) => {
             typeMaxTotals[type] += m;
             rowMax += m;
             
-            return `<td class="center" style="color: #666;">${m}</td>`;
+            return `<td class="center" style="color: black;">${m}</td>`;
         }).join('');
 
         semesterGrandAwarded += rowAwarded;
@@ -431,9 +431,8 @@ const generateTable = (title, subjectList) => {
 
     // 4. Final HTML Assembly
     let marksheetHTML = `
-    <div class="actions">
-            <button class="btn-action" onclick="window.print()">Print Official PDF</button>
-            <button class="btn-action" onclick="downloadPNG()">Download Transcript (PNG)</button>
+    <div class="actions" style="display:flex; gap:10px; justify-content: center; margin-bottom: 20px;">
+            <button  style="padding: 10px 25px; background: #1e3a8a; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;"class="btn-action" onclick="downloadPNG()">Download Transcript (PNG)</button>
              <button onclick="window.print()" style="padding: 10px 25px; background: #1e3a8a; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
         Print Marksheet / Save as PDF
     </button>
@@ -483,11 +482,11 @@ const generateTable = (title, subjectList) => {
                     <th>Total Marks Obtained</th>
                     <th>Total Maximum Marks</th>
                 </tr>
-                <tr class="center"><td>1</td><td >First Semester</td><td><strong>${s1Total}</strong></td><td>500</td></tr>
-                <tr class="center"><td>2</td><td>Second Semester</td><td><strong>${s2Total}</strong></td><td>500</td></tr>
-                <tr class="center"><td>3</td><td>Practical Courses</td><td><strong>${prTotal}</strong></td><td>400</td></tr>
+                <tr class="center"><td>1</td><td style="text-align: left;">First Semester</td><td><strong>${s1Total}</strong></td><td>500</td></tr>
+                <tr class="center"><td>2</td><td style="text-align: left;">Second Semester</td><td><strong>${s2Total}</strong></td><td>500</td></tr>
+                <tr class="center"><td>3</td><td style="text-align: left;">Practical Courses</td><td><strong>${prTotal}</strong></td><td>400</td></tr>
                 <tr style="background:#f1f5f9; font-weight:bold;">
-                    <td colspan="2">Total</td><td class="center" style="text-align:center;">${s1Total + s2Total + prTotal}</td><td>1400</td>
+                <td colspan="2">Total</td><td class="center" style="text-align:center;">${s1Total + s2Total + prTotal}</td><td>1400</td>
                 </tr>
             </table>
 
