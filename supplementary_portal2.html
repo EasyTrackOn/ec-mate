@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplementary Examination Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #7c3aed; --primary-light: #f5f3ff; --success: #166534; --success-bg: #dcfce7; --warning: #ca8a04; --warning-bg: #fef9c3; --danger: #dc2626; --text-dark: #1e293b; --text-light: #64748b; --border: #e2e8f0; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; margin: 0; padding: 20px; color: var(--text-dark); display: flex; justify-content: center; min-height: 100vh; }
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .app-container { width: 100%; max-width: 650px; background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+        .app-header { background: var(--primary); padding: 30px 20px; text-align: center; color: white; }
+        .app-header h1 { margin: 0; font-size: 22px; font-weight: 700; }
+        .app-body { padding: 30px; }
+        .form-group { margin-bottom: 20px; }
+        .form-control { width: 100%; padding: 12px 15px; border: 2px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 15px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-dark); margin-top: 10px; }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
+        .interactive-row { cursor: pointer; transition: background 0.2s; }
+        .interactive-row:hover { background: #f1f5f9 !important; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { background: #f8fafc; padding: 12px; text-align: left; border-bottom: 1px solid var(--border); color: var(--text-light); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); }
+        .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); z-index: 999; display: flex; justify-content: center; align-items: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div id="globalLoader" class="loader-overlay hidden"><div class="spinner"></div></div>
+
+<div class="app-container fade-in">
+    <div class="app-header">
+        <h1>Supplementary Portal</h1>
+        <p>Backlog Examination Registration</p>
+    </div>
+
+    <div class="app-body">
+        <div id="loginSection">
+            <div class="form-group"><label>Register Number</label><input type="text" id="regNo" class="form-control" placeholder="Enter Reg No"></div>
+            <div class="form-group"><label>Access Pin (Last 4 Digits of Mobile)</label><input type="password" id="mobile" class="form-control" maxlength="4"></div>
+            <button onclick="handleLogin()" class="btn btn-primary">Verify Records</button>
+        </div>
+
+        <div id="dashboardSection" class="hidden">
+            <div class="dash-header">
+                <div><h2 id="studentName" style="margin:0; font-size:18px;"></h2><span id="studentReg" style="font-size:13px; color:var(--text-light);"></span></div>
+                <button onclick="location.reload()" class="btn-outline" style="width:auto; padding:5px 10px; font-size:12px;">Logout</button>
+            </div>
+
+            <div id="selectionMode">
+                <h3 style="font-size:15px; margin-bottom:10px;">Arrear Subjects Detected</h3>
+                <div style="margin-bottom: 15px; font-size: 13px; color: var(--text-light);">Subjects with marks below the pass criteria are pre-selected.</div>
+                
+                <div style="border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:40px; text-align:center;">Select</th>
+                                <th>Subject Code & Name</th>
+                                <th>Marks Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subjectTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div style="background:var(--primary-light); padding:15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <span style="font-weight:600;">Total Exam Fee:</span>
+                    <span id="totalFee" style="font-size:20px; font-weight:800; color:var(--primary);">₹0</span>
+                </div>
+
+                <button id="submitBtn" onclick="saveSupplyData()" class="btn btn-primary" disabled>Register for Selected Exams</button>
+            </div>
+            <div id="appliedView" class="hidden fade-in">
+    <div style="background: var(--success-bg); border: 1px solid #86efac; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px;">
+        <div style="color: var(--success); font-size: 40px; margin-bottom: 10px;">✓</div>
+        <h3 style="color: var(--success); margin: 0;">Application Submitted</h3>
+        <p id="appliedStatusText" style="font-size: 13px; color: var(--success); font-weight: 600; text-transform: uppercase; margin-top: 5px;"></p>
+    </div>
+    
+    <div style="background: white; border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+    <span style="font-size: 12px; color: var(--text-light); font-weight: 600;">Selected Subjects:</span>
+    <ul id="appliedItemsList" style="margin: 10px 0 0 0; padding-left: 20px; color: var(--primary); line-height: 1.6;">
+    </ul>
+    
+    <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 14px;">Total Fee:</span>
+        <b id="appliedAmountDisplay" style="font-size: 18px; color: var(--primary);">₹0</b>
+    </div>
+</div>
+    
+    <button id="editBtn" onclick="showSelectionMode()" class="btn btn-outline">Edit Application</button>
+</div>
+
+<div id="selectionMode" class="hidden">
+    </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO96MIqHL8_r34UVJUq75aZvxsshUewKQUNnn33QSljp2LgJOjzecZixuhN_OfSn4Mig/exec";
+    let currentStudent = null;
+    let appliedList = []; 
+    const FEE_PER_SUBJECT = 300; 
+
+    function showLoading() { document.getElementById("globalLoader").classList.remove("hidden"); }
+    function hideLoading() { document.getElementById("globalLoader").classList.add("hidden"); }
+let currentApplication = null;
+
+async function handleLogin() {
+    const reg = document.getElementById("regNo").value.trim();
+    const mob = document.getElementById("mobile").value.trim();
+    showLoading();
+    try {
+        const resp = await fetch(`${SCRIPT_URL}?action=supplogin&regNo=${reg}&mobile=${mob}`);
+        const data = await resp.json();
+        if (data.error) { alert(data.error); } 
+        else {
+            currentStudent = data.student;
+            currentApplication = data.application;
+            
+            document.getElementById("loginSection").classList.add("hidden");
+            document.getElementById("dashboardSection").classList.remove("hidden");
+            
+            if (currentApplication) {
+                showAppliedView();
+            } else {
+                showSelectionMode();
+            }
+        }
+    } catch(e) { alert("Error"); } finally { hideLoading(); }
+}
+
+function showAppliedView() {
+    document.getElementById("selectionMode").classList.add("hidden");
+    document.getElementById("appliedView").classList.remove("hidden");
+    
+    document.getElementById("studentName").textContent = currentStudent.name;
+    document.getElementById("studentReg").textContent = `Reg: ${currentStudent.regNo}`;
+    
+    document.getElementById("appliedStatusText").textContent = `Status: ${currentApplication.status}`;
+    document.getElementById("appliedAmountDisplay").textContent = `₹${currentApplication.amount}`;
+
+    // --- LIST FORMATTING LOGIC ---
+    const listContainer = document.getElementById("appliedItemsList");
+    listContainer.innerHTML = ""; // Clear existing list
+
+    // Split the "Math, Physics, English" string by the comma
+    const subjectsArray = currentApplication.subjects.split(",");
+
+    subjectsArray.forEach(sub => {
+        const li = document.createElement("li");
+        li.textContent = sub.trim(); // .trim() removes any accidental spaces
+        li.style.marginBottom = "4px";
+        li.style.fontWeight = "600";
+        listContainer.appendChild(li);
+    });
+    // -----------------------------
+    
+    const editBtn = document.getElementById("editBtn");
+    if (currentApplication.status === "Verified") {
+        editBtn.disabled = true;
+        editBtn.innerHTML = "✓ Verified - Modification Locked";
+        editBtn.style.opacity = "0.7";
+    } else {
+        editBtn.disabled = false;
+        editBtn.innerHTML = "Edit Application";
+        editBtn.style.opacity = "1";
+    }
+}
+
+function showSelectionMode() {
+    console.log(currentStudent);
+    
+    document.getElementById("appliedView").classList.add("hidden");
+    document.getElementById("selectionMode").classList.remove("hidden");
+    
+    const tbody = document.getElementById("subjectTableBody");
+    tbody.innerHTML = "";
+
+    // Parse existing subjects if editing
+    const selectedArray = currentApplication ? currentApplication.subjects.split(", ") : [];
+
+    currentStudent.subjects.forEach(sub => {
+        const isArrear = sub.isFailed === true;
+        const isSelected = selectedArray.includes(sub.name.trim());
+        const checkAttr = (isArrear || isSelected) ? "checked" : "";
+
+        tbody.innerHTML += `
+            <tr onclick="toggleRow(this)" class="interactive-row" style="${isArrear ? 'background:#fff5f5' : ''}">
+                <td style="text-align:center"><input type="checkbox" class="sub-checkbox" data-sub="${sub.name}" ${checkAttr} onchange="updateFee()"></td>
+                <td><b>${sub.name}</b><br>${isArrear ? '<small style="color:red">Arrear</small>' : ''}</td>
+                <td>₹300</td>
+            </tr>`;
+    });
+    updateFee();
+}
+
+    function renderSubjectList(status, appliedData) {
+    document.getElementById("studentName").textContent = currentStudent.name;
+    document.getElementById("studentReg").textContent = `Reg: ${currentStudent.regNo}`;
+    
+    // Check if status is Verified - Lock the Submit Button
+    const submitBtn = document.getElementById("submitBtn");
+    const isLocked = status === "Verified";
+    
+    if (isLocked) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Application Verified (Locked)";
+        submitBtn.style.background = "var(--success)";
+    }
+
+    const tbody = document.getElementById("subjectTableBody");
+    tbody.innerHTML = "";
+
+    // Convert comma string from backend into an array for checking
+    // Note: appliedData in your login returns [{subject: "Math, Physics"}]
+    const previouslySelected = appliedData.length > 0 ? 
+        appliedData[0].subject.split(", ").map(s => s.trim()) : [];
+
+    currentStudent.subjects.forEach(sub => {
+        const isArrear = sub.isFailed === true;
+        const isSelected = previouslySelected.includes(sub.name.trim());
+        
+        // Auto-check if it's an Arrear OR if it was previously saved
+        const checkAttr = (isArrear || isSelected) ? "checked" : "";
+        const disabledAttr = isLocked ? "disabled" : "";
+
+        tbody.innerHTML += `
+            <tr class="${isArrear ? 'fail-row' : ''}" style="cursor: ${isLocked ? 'default' : 'pointer'}" 
+                onclick="${isLocked ? '' : 'toggleRow(this)'}">
+                <td style="text-align:center">
+                    <input type="checkbox" class="sub-checkbox" data-sub="${sub.name}" 
+                        ${checkAttr} ${disabledAttr} onchange="updateFee()">
+                </td>
+                <td>
+                    <div style="font-weight:600;">${sub.name}</div>
+                    ${isArrear ? '<span class="badge status-failed">Arrear</span>' : ''}
+                </td>
+                <td style="text-align:center">₹300</td>
+            </tr>`;
+    });
+    updateFee();
+}
+
+    function toggleRow(row) {
+        if(event.target.type === 'checkbox') return;
+        const cb = row.querySelector('.sub-checkbox');
+        cb.checked = !cb.checked;
+        updateFee();
+    }
+
+    function updateFee(e) {
+        if(e) e.stopPropagation();
+        const selectedCount = document.querySelectorAll('.sub-checkbox:checked').length;
+        document.getElementById("totalFee").textContent = `₹${selectedCount * FEE_PER_SUBJECT}`;
+        document.getElementById("submitBtn").disabled = selectedCount === 0;
+    }
+
+    async function saveSupplyData() {
+        const checks = document.querySelectorAll('.sub-checkbox:checked');
+        const selections = Array.from(checks).map(c => ({ subject: c.dataset.sub }));
+        
+        if(!confirm(`Register for ${selections.length} subjects?`)) return;
+
+        showLoading();
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "save_supply",
+                    regNo: currentStudent.regNo,
+                    name: currentStudent.name,
+                    selections: selections
+                })
+            });
+            alert("Supplementary Registration Successful!");
+            location.reload();
+        } catch(e) { alert("Submission failed"); } finally { hideLoading(); }
+    }
+</script>
+</body>
+</html>
