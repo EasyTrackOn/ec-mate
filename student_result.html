@@ -561,8 +561,8 @@ document.getElementById("semname").textContent = "Semester-2 (2025-26)";
         const rawCE = s.pe;
         const rawOMR = s.te;
         
-        const valCE = (rawCE === "AB" || !rawCE) ? 0 : Number(rawCE);
-        const valOMR = (rawOMR === "AB" || !rawOMR) ? 0 : Number(rawOMR);
+        const valCE = (rawCE === "AB" || !rawCE) ? 0 : Number(rawCE)||0;
+        const valOMR = (rawOMR === "AB" || !rawOMR) ? 0 : Number(rawOMR)||0;
         
         const total = valCE + valOMR;
 
