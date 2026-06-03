@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ec-Mate Teacher Education</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #18181f;
+      --surface2: #22222d;
+      --surface-glass: rgba(24, 24, 31, 0.7);
+      --border: #2e2e3d;
+      --accent-gold: #c9a96e;
+      --accent-gold-hover: #e8c98a;
+      --danger: #e07a8a;
+      --success: #5ec8b4;
+      --text-primary: #f0ede8;
+      --text-secondary: #9996a0;
+      --sidebar-w: 260px;
+      --appbar-h: 64px;
+      --radius: 14px;
+      --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --font-head: 'Playfair Display', serif;
+      --font-body: 'DM Sans', sans-serif;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── TYPOGRAPHY & HEADERS ── */
+    h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 500; }
+    .page-header { margin-bottom: 28px; }
+    .page-header h2 { font-size: 28px; color: var(--text-primary); }
+    .page-header p { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+    .flex-between { display: flex; align-items: center; justify-content: space-between; }
+
+    /* ── GLASSMORPHISM UI ── */
+    .card-glass {
+      background: var(--surface-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-glass);
+      transition: var(--transition);
+    }
+    .card-glass:hover { border-color: rgba(201, 169, 110, 0.3); transform: translateY(-2px); }
+
+    /* ── TABLES ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; font-size: 11px; font-weight: 600; color: var(--text-secondary); letter-spacing: 1.2px; text-transform: uppercase; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    tbody tr { transition: background var(--transition); }
+    tbody tr:hover { background: var(--surface2); }
+    tbody td { padding: 14px; font-size: 14px; border-bottom: 1px solid rgba(46,46,61,0.5); vertical-align: middle; }
+    
+    /* ── BADGES & BUTTONS ── */
+    .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+    .badge-teal { background: rgba(94, 200, 180, 0.1); color: var(--success); border: 1px solid rgba(94, 200, 180, 0.2); }
+    .badge-rose { background: rgba(224, 122, 138, 0.1); color: var(--danger); border: 1px solid rgba(224, 122, 138, 0.2); }
+    .badge-gold { background: rgba(201, 169, 110, 0.1); color: var(--accent-gold); border: 1px solid rgba(201, 169, 110, 0.2); }
+
+    .btn { padding: 10px 20px; border-radius: 10px; font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; }
+    .btn-gold { background: linear-gradient(135deg, var(--accent-gold), #b8914a); color: #0f0f13; }
+    .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(201, 169, 110, 0.3); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-primary); }
+    .btn-outline:hover { border-color: var(--accent-gold); color: var(--accent-gold); background: rgba(201,169,110,0.05); }
+    .btn-danger { background: rgba(224,122,138,0.1); color: var(--danger); border: 1px solid rgba(224,122,138,0.2); }
+    .btn-danger:hover { background: rgba(224,122,138,0.2); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+
+    /* ── FORMS & INPUTS ── */
+    .form-floating { position: relative; margin-bottom: 20px; width: 100%; }
+    .form-floating input, .form-floating select { width: 100%; padding: 20px 16px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary); font-size: 15px; transition: var(--transition); appearance: none; }
+    .form-floating input:focus, .form-floating select:focus { border-color: var(--accent-gold); outline: none; box-shadow: 0 0 0 3px rgba(201,169,110,0.1); }
+    .form-floating label { position: absolute; top: 16px; left: 16px; color: var(--text-secondary); font-size: 15px; transition: var(--transition); pointer-events: none; }
+    .form-floating input:focus ~ label, .form-floating input:not(:placeholder-shown), .form-floating select:focus ~ label, .form-floating select:valid ~ label { top: 6px; font-size: 10px; color: var(--accent-gold); letter-spacing: 1px; }
+.form-floating {
+    position: relative; /* Ensure the wrapper serves as the coordinate anchor for absolute positioning */
+}
+
+.form-floating input, .form-floating select { 
+    width: 100%; 
+    padding: 24px 16px 6px; /* Optimized padding to distribute space cleanly for the miniaturized upper text */
+    background: var(--surface); 
+    border: 1px solid var(--border); 
+    border-radius: 10px; 
+    color: var(--text-primary); 
+    font-size: 15px; 
+    transition: var(--transition); 
+    appearance: none; 
+}
+
+.form-floating input:focus, .form-floating select:focus { 
+    border-color: var(--accent-gold); 
+    outline: none; 
+    box-shadow: 0 0 0 3px rgba(201,169,110,0.1); 
+}
+
+.form-floating label { 
+    position: absolute; 
+    top: 16px; 
+    left: 16px; 
+    color: var(--text-secondary); 
+    font-size: 15px; 
+    transition: var(--transition); 
+    pointer-events: none; 
+}
+
+/* 🔥 THE BUG FIX OVERRIDE: Targets the label when placeholder is visible and input is NOT focused */
+.form-floating input:placeholder-shown:not(:focus) ~ label {
+    top: 16px;
+    font-size: 15px;
+    color: var(--text-secondary);
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+/* Handles smooth animations during interaction phases */
+.form-floating input:focus ~ label, 
+.form-floating input:not(:placeholder-shown) ~ label, 
+.form-floating select:focus ~ label, 
+.form-floating select:valid ~ label { 
+    top: 6px; 
+    font-size: 10px; 
+    color: var(--accent-gold); 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+}
+
+    /* ── APP SHELL LAYOUT ── */
+    #sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 40; backdrop-filter: blur(2px); }
+    #sidebar-overlay.show { display: block; }
+    
+    #sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 50; transition: transform var(--transition); overflow: hidden; }
+    .sidebar-header { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, rgba(201,169,110,0.06) 0%, transparent 100%); display: flex; align-items: center; gap: 12px; }
+    .brand-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--accent-gold), var(--danger)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 12px rgba(201,169,110,0.3); }
+    .brand-text { font-family: var(--font-head); font-size: 15px; line-height: 1.3; }
+    .brand-text span { display: block; font-size: 10px; color: var(--accent-gold); letter-spacing: 1.5px; text-transform: uppercase; font-family: var(--font-body); }
+    
+    .sidebar-nav { flex: 1; overflow-y: auto; padding: 16px 12px; }
+    .nav-section-label { font-size: 10px; font-weight: 600; color: var(--text-secondary); letter-spacing: 1.5px; text-transform: uppercase; padding: 16px 10px 8px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; cursor: pointer; color: var(--text-secondary); font-size: 14px; transition: var(--transition); margin-bottom: 2px; }
+    .nav-item .nav-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 9px; font-size: 14px; background: var(--surface2); transition: var(--transition); }
+    .nav-item:hover { background: var(--surface2); color: var(--text-primary); }
+    .nav-item:hover .nav-icon { background: rgba(201,169,110,0.1); color: var(--accent-gold); }
+    .nav-item.active { background: rgba(201,169,110,0.1); color: var(--accent-gold); }
+    .nav-item.active .nav-icon { background: var(--accent-gold); color: #000; }
+    
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border); }
+    .user-badge { display: flex; align-items: center; gap: 10px; }
+    .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-gold), var(--danger)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #0f0f13; flex-shrink: 0; }
+    
+    #appbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--appbar-h); background: rgba(15,15,19,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 16px; z-index: 30; }
+    #menu-toggle { display: none; width: 40px; height: 40px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
+    .appbar-title { font-family: var(--font-head); font-size: 18px; flex: 1; }
+    
+    #main-content { margin-left: var(--sidebar-w); margin-top: var(--appbar-h); padding: 32px; height: calc(100vh - var(--appbar-h)); overflow-y: auto; }
+
+    /* ── MODALS & TOASTS ── */
+    .modal-overlay { 
+  display: none; 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0, 0, 0, 0.8); 
+  z-index: 10000; /* Increased to ensure it layers safely above all table actions and bars */
+  align-items: center; 
+  justify-content: center; 
+  backdrop-filter: blur(4px); 
+  -webkit-backdrop-filter: blur(4px); /* Safari support */
+  padding: 12px; /* Reduced to provide more touch and visibility margin on mobile screens */
+}
+
+.modal-overlay.show { 
+  display: flex; 
+}
+
+.modal { 
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  border-radius: 16px; /* Slightly softened curve for mobile consistency */
+  padding: 20px; /* Compact mobile padding footprint */
+  width: 100%; 
+  max-width: calc(90vw - 40px); /* 🔥 Capped max width for better readability on larger screens while still being mobile-friendly */
+  max-height: calc(100vh - 40px); /* 🔥 Prevent the modal from extending past viewport limits */
+  display: flex;
+  flex-direction: column; /* Allows internal body segments to wrap and scroll independently */
+  box-shadow: var(--shadow-glass); 
+  animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); /* Smoother mobile spring easing */
+  box-sizing: border-box;
+}
+
+.modal-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: 16px; 
+  flex-shrink: 0; /* Keep header from shrinking out of view when body is long */
+}
+
+.modal-header h3 { 
+  font-family: var(--font-head); 
+  font-size: 18px; /* Better scale matching for compact mobile viewing ports */
+  margin: 0;
+}
+
+/* 🔥 NEW CLASS: Put this class around your form fields wrapper div inside the modal body template */
+.modal-body {
+  overflow-y: auto; /* Enables clean touch momentum scrolling on mobile screens */
+  -webkit-overflow-scrolling: touch; 
+  padding-right: 4px; /* Scrollbar clearance cushion */
+  flex-grow: 1;
+}
+
+.modal-footer { 
+  display: flex; 
+  justify-content: flex-end; 
+  gap: 12px; 
+  margin-top: 20px; 
+  flex-shrink: 0; /* Ensures buttons remain anchored and visible at the base */
+}
+
+/* --- Responsive Tablet and Desktop Media Queries Matrix --- */
+@media (min-width: 576px) {
+  .modal-overlay {
+    padding: 24px;
+  }
+  .modal {
+    padding: 30px; /* Restore spacious padding room layout on wider screen configurations */
+    border-radius: 20px;
+  }
+  .modal-header {
+    margin-bottom: 24px;
+  }
+  .modal-header h3 {
+    font-size: 20px;
+  }
+  .modal-footer {
+    margin-top: 24px;
+  }
+}
+
+/* Optional: Handles vertical layouts for tiny mobile screens like iPhone SE */
+@media (max-width: 360px) {
+  .modal-footer {
+    flex-direction: column-reverse; /* Stacks button actions vertically so texts don't truncate */
+    width: 100%;
+  }
+  .modal-footer .btn {
+    width: 100%; /* Makes touch target areas full-width for easier interaction */
+    text-align: center;
+  }
+}
+    #toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 20px; font-size: 14px; display: none; z-index: 200; align-items: center; gap: 10px; box-shadow: var(--shadow-glass); animation: slideIn 0.3s ease; }
+    #toast.show { display: flex; }
+    #toast.success { border-color: rgba(94, 200, 180, 0.4); color: var(--success); }
+    #toast.error { border-color: rgba(224, 122, 138, 0.4); color: var(--danger); }
+    #toast.warning { border-color: rgba(201, 169, 110, 0.4); color: var(--accent-gold); }
+
+    /* ── SKELETON LOADER & LOGIN ── */
+    .skeleton-loader { background: linear-gradient(90deg, var(--surface) 25%, var(--border) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+    #login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at center, #1e1830 0%, #0f0f13 100%); }
+    .login-card { background: var(--surface-glass); backdrop-filter: blur(20px); border: 1px solid rgba(201,169,110,0.2); border-radius: 24px; padding: 50px 40px; width: 400px; text-align: center; box-shadow: var(--shadow-glass); }
+    
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      #sidebar { transform: translateX(-100%); }
+      #sidebar.open { transform: translateX(0); }
+      #appbar { left: 0; }
+      #menu-toggle { display: flex; }
+      #main-content { margin-left: 0; padding: 20px; }
+    }
+  </style>
+  <style src="styles.css"></style>
+</head>
+<body>
+
+  <div id="login-screen">
+    <div class="login-card">
+      <div style="display:inline-flex; width:70px; height:70px; background:linear-gradient(135deg, var(--accent-gold), var(--danger)); border-radius:20px; align-items:center; justify-content:center; font-size:30px; margin-bottom:20px;">🎓</div>
+      <h2 style="margin-bottom: 5px;">Ec-Mate Teacher Education</h2>
+      <p style="color: var(--text-secondary); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 30px;">Access Portal</p>
+      
+      <div class="form-floating text-left">
+        <input type="email" id="login-email" placeholder="admin@ec-mate.com" required>
+        <label>Email Address</label>
+      </div>
+      <div class="form-floating text-left">
+        <input type="password" id="login-password" placeholder="••••••••" required>
+        <label>Password</label>
+      </div>
+      
+      <div id="login-error" style="display:none; background: rgba(224,122,138,0.1); border: 1px solid var(--danger); color: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 13px;"></div>
+      
+      <button class="btn btn-gold" id="login-btn" style="width: 100%; justify-content: center; padding: 14px;">
+        <span id="login-btn-text">Sign In Securely</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="app-shell" style="display: none;">
+    <div id="sidebar-overlay"></div>
+    <nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="brand-icon">🎓</div>
+    <div class="brand-text">Ec-Mate Teacher Education <span>Enterprise ERP</span></div>
+  </div>
+  
+  <div class="sidebar-nav" id="sidebar-nav"></div>
+
+  <div class="sidebar-footer">
+    <div class="user-badge">
+      <div class="user-avatar" id="user-avatar">-</div>
+      <div>
+        <div style="font-size: 13px; font-weight: 500;" id="user-name-badge">Loading...</div>
+        <div style="font-size: 11px; color: var(--text-secondary);" id="user-email-badge">...</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    <header id="appbar">
+      <div id="menu-toggle" onclick="window.UI.openSidebar()"><i class="fa fa-bars"></i></div>
+      <div class="appbar-title">Ec-Mate Teacher Education</div>
+    </header>
+
+    <main id="main-content">
+      </main>
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-title">Action</h3>
+        <button style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; font-size:18px;" onclick="window.UI.closeModal()"><i class="fa fa-xmark"></i></button>
+      </div>
+      <div id="modal-body"></div>
+      <div class="modal-footer" id="modal-footer"></div>
+    </div>
+  </div>
+
+  <div id="toast">
+    <i class="fa fa-circle-info"></i>
+    <span id="toast-msg">Notification message here</span>
+  </div>
+
+  <script type="module" src="app.js"></script>
+  
+  <script>
+    // Minimal inline bindings for the logout button since it's hardcoded in HTML
+    document.addEventListener('DOMContentLoaded', () => {
+      const logoutBtn = document.getElementById('btn-logout');
+      if(logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          // Access the AuthModule imported inside app.js globally
+          if(window.AuthModule) await window.AuthModule.logout();
+        });
+      }
+    });
+  </script>
+</body>
+</html>

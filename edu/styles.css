@@ -1,0 +1,140 @@
+:root {
+  --bg: #32323f;
+  --surface: #bebee2;
+  --surface-glass: rgba(24, 24, 31, 0.7);
+  --border: #2e2e3d;
+  --accent-gold: #c9a96e;
+  --accent-gold-hover: #e8c98a;
+  --danger: #e07a8a;
+  --success: #5ec8b4;
+  --text-primary: #f0ede8;
+  --text-secondary: #9996a0;
+  --sidebar-width: 280px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* Glassmorphism Cards */
+.card-glass {
+  background: var(--surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-glass);
+  transition: var(--transition);
+}
+
+.card-glass:hover {
+  border-color: rgba(201, 169, 110, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Premium Inputs */
+.form-floating {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.form-floating input, .form-floating select {
+  width: 100%;
+  padding: 16px 16px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 15px;
+  transition: var(--transition);
+}
+
+.form-floating input:focus {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 4px rgba(201, 169, 110, 0.1);
+  outline: none;
+}
+
+.form-floating label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  transition: var(--transition);
+  pointer-events: none;
+}
+
+.form-floating input:focus ~ label,
+.form-floating input:not(:placeholder-shown) ~ label {
+  top: 6px;
+  font-size: 11px;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Skeleton Loaders */
+.skeleton-loader {
+  background: linear-gradient(90deg, var(--surface) 25%, var(--border) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Badges */
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.badge-teal { background: rgba(94, 200, 180, 0.1); color: var(--success); border: 1px solid rgba(94, 200, 180, 0.2); }
+.badge-rose { background: rgba(224, 122, 138, 0.1); color: var(--danger); border: 1px solid rgba(224, 122, 138, 0.2); }
+
+/* Mark Entry Specific Styles */
+.mark-entry-table .grid-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface1);
+  color: var(--text-primary);
+  border-radius: 6px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s;
+}
+.mark-entry-table .grid-input:focus {
+  border-color: var(--primary-color);
+  background: rgba(212, 175, 55, 0.05);
+}
+/* Hide number arrows for a cleaner look */
+.mark-entry-table input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+select{
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+    border-radius: 6px;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s;
+}
